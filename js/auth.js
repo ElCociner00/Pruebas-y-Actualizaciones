@@ -1,0 +1,65 @@
+import { supabase } from "./supabase.js";
+import { getUserContext, primeUserContextFromAuth } from "./session.js";
+
+const form = document.getElementById("loginForm");
+const emailInput = document.getElementById("emailInput");
+const passwordInput = document.getElementById("passwordInput");
+
+console.log("auth.js cargado correctamente");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  console.log("Formulario enviado");
+  
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  
+  console.log("Email:", email);
+  console.log("Password length:", password.length);
+
+  try {
+    // 1. Intento de autenticación
+    console.log("Intentando login...");
+    
+    const { data, error } = await supabase.auth.signInWithPassword({ 
+      email, 
+      password 
+    });
+    
+    console.log("Respuesta de autenticación:", { data, error });
+
+    if (error) {
+      console.error("Error de autenticación:", error.message);
+      alert("Credenciales incorrectas: " + error.message);
+      return;
+    }
+    
+    console.log("Login exitoso, usuario:", data.user?.email);
+    primeUserContextFromAuth(data.user, data.session);
+
+    // 2. Obtener contexto
+    console.log("Obteniendo contexto de usuario...");
+    const context = await getUserContext();
+    console.log("Contexto obtenido:", context);
+
+    if (!context) {
+      alert("Usuario sin contexto - contacta al administrador");
+      return;
+    }
+
+    // 3. Redirigir al selector de entorno
+    console.log("Rol del usuario:", context.rol);
+    if (context.super_admin === true && !context.empresa_id) {
+      window.location.href = "/Plataforma_Restaurantes/gestion_empresas/";
+      return;
+    }
+
+    window.location.href = "/Plataforma_Restaurantes/entorno/";
+
+  } catch (catchError) {
+    console.error("Error inesperado en el flujo:", catchError);
+    alert("Error interno: " + catchError.message);
+  }
+});
+

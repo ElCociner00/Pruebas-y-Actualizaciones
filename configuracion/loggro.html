@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Loggro</title>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/loggro.css">
+</head>
+
+<body style="display:none">
+
+  <!-- Guardia de autenticación -->
+  <script type="module" src="../js/auth_guard.js"></script>
+
+  <!-- Guardia de permisos -->
+  <script type="module">
+    import { guardPage } from "../js/guard_page.js";
+    guardPage("loggro");
+  </script>
+
+  <!-- Header -->
+  <script type="module" src="../js/header.js"></script>
+
+  <div class="main">
+    <h1>Loggro</h1>
+    <p class="descripcion">
+      Configura las credenciales de Loggro para habilitar las integraciones.
+    </p>
+
+    <form id="loggroForm" class="formulario">
+      <div class="campo">
+        <label for="loggroToken">
+          Token
+          <span class="info-icon" data-tooltip="Esto lo conseguirás en la documentación de Loggro, habla con un asesor para obtenerla o pide nuestro servicio de instalación.">🔍</span>
+        </label>
+        <p class="ayuda">Por favor pon aquí tu Token Bearer de Loggro.</p>
+        <input id="loggroToken" type="text" required>
+      </div>
+
+      <div class="campo">
+        <label for="loggroUrl">
+          URL
+          <span class="info-icon" data-tooltip="Solo entra a tu pestaña principal de la plataforma, copia la URL que te aparece en la barra superior y pégala aquí.">🔍</span>
+        </label>
+        <p class="ayuda">Por favor pon aquí el enlace principal de la plataforma.</p>
+        <input id="loggroUrl" type="url" required>
+      </div>
+
+      <button type="submit">Guardar credenciales</button>
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+
+  <script type="module" src="../js/loggro.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+</body>
+</html>

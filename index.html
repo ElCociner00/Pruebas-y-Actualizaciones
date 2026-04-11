@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AXIOMA | Iniciar sesión</title>
+
+  <!-- CSS GLOBAL (ruta corregida) -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+  <div class="main">
+    <h2>Iniciar sesión</h2>
+
+    <p>
+      Accede a tu panel de gestión de Global Nexo
+    </p>
+
+    <form id="loginForm">
+      <input id="emailInput" type="email" placeholder="Correo electrónico" required>
+      <input id="passwordInput" type="password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <div class="login-extra">
+      <a href="./registro/index.html" class="registro-link">
+        ¿No tienes cuenta? Regístrate aquí
+      </a>
+    </div>
+  </div>
+
+  <!-- JS (también corregido por consistencia) -->
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/public_chrome.js"></script>
+  <script type="module" src="js/footer.js"></script>
+</body>
+</html>
