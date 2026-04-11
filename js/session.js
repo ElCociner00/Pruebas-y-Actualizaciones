@@ -1,3 +1,6 @@
+// js/session.js (FRAGMENTO A MODIFICAR)
+// Añade este import al inicio del archivo
+import { cargarYPersistirPermisos } from "./permisos.js";
 import { supabase } from "./supabase.js";
 
 let cachedUserContext = null;
@@ -456,4 +459,40 @@ if (typeof window !== "undefined") {
     const session = await getSessionConEmpresa();
     return session?.empresa || null;
   };
+}
+
+// Dentro de la función persistUserContext(context), después de establecer el contexto y antes del return:
+async function persistUserContext(context) {
+  const safe = sanitizeContextCandidate(context);
+  if (!safe) return null;
+
+  cachedUserContext = safe;
+
+  writeJsonStorage(USER_CONTEXT_STORAGE_KEY, {
+    expires_at: Date.now() + USER_CONTEXT_TTL_MS,
+    context: safe
+  });
+
+  saveStoredUserRecord(safe);
+  
+  // --- [CORREGIDO] Cargar permisos en segundo plano ---
+  const usuarioId = safe.user?.id || safe.user?.user_id;
+  const empresaId = safe.empresa_id;
+  const rol = safe.rol;
+  if (usuarioId && empresaId) {
+      // No esperamos a que termine para no bloquear el login
+      cargarYPersistirPermisos(usuarioId, empresaId, rol).catch(err => console.error("Error cargando permisos post-login", err));
+  }
+  // --- FIN CORRECCIÓN ---
+
+  return safe;
+}
+
+// En la función clearUserContextCache, añade la limpieza de permisos
+export function clearUserContextCache() {
+  cachedUserContext = null;
+  clearCurrentContextStorage();
+  // --- [CORREGIDO] Limpiar también permisos ---
+  import("./permisos.js").then(module => module.limpiarCachePermisos());
+  // --- FIN CORRECCIÓN ---
 }
