@@ -1,0 +1,78 @@
+/* ===============================
+   CONFIGURACIÓN
+   =============================== */
+
+.main {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 8px 0; /* ← aire vertical general */
+}
+
+/* -------------------------------
+   CONTENEDOR GENERAL
+-------------------------------- */
+
+.config-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+
+  margin-bottom: 12px; /* ← separación visible pero sutil */
+
+  overflow: hidden;
+
+  /* separación visual sin romper diseño */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* -------------------------------
+   BOTÓN DEL ACORDEÓN
+   (hereda estilos de main.css)
+-------------------------------- */
+
+.accordion-toggle {
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  font-size: 15px;
+}
+
+.accordion-content + .accordion-toggle {
+  margin-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* -------------------------------
+   CONTENIDO DEL ACORDEÓN
+-------------------------------- */
+
+.accordion-content {
+  display: none;
+  padding: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* -------------------------------
+   FORMULARIOS INTERNOS
+-------------------------------- */
+
+.accordion-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.accordion-content input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* -------------------------------
+   ESTADO
+-------------------------------- */
+
+#status {
+  font-size: 13px;
+  margin-top: 8px;
+}

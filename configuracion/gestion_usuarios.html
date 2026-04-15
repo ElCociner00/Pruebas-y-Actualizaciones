@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Gestión de usuarios</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/gestion_usuarios.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+<script type="module" src="../js/header.js"></script>
+
+  <div class="main">
+    <h1>Gestión de usuarios</h1>
+    <p class="intro">Administra usuarios de la empresa y su estado activo/inactivo en un solo lugar.</p>
+    <div id="gestionUsuariosEstado" class="status"></div>
+    <div id="gestionUsuariosPanel"></div>
+  </div>
+
+  <script type="module" src="../js/gestion_usuarios.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+  <!-- Parche de autenticación para módulos (aislado) -->
+  <script type="module" src="../js/module_fix/init.js"></script>
+</body>
+</html>
