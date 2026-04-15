@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Seleccionar entorno</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/entorno.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+
+  <div class="main entorno-main">
+    <h1>Selecciona tu entorno</h1>
+    <p>Elige a cuál entorno deseas ingresar para continuar.</p>
+    <div class="entorno-actions">
+      <button id="btnEntornoLoggro" type="button">Entrar a Loggro</button>
+      <button id="btnEntornoSiigo" type="button">Entrar a Siigo</button>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <script type="module" src="../js/entorno_selector.js"></script>
+  <script type="module" src="../js/public_chrome.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+  <!-- Parche de autenticación para módulos (aislado) -->
+  <script type="module" src="../js/module_fix/init.js"></script>
+</body>
+</html>
