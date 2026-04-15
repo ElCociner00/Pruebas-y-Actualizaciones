@@ -26,6 +26,28 @@
   margin-top: 12px;
 }
 
+.nomina-note {
+  margin-top: 8px;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.nomina-filtros-parametros {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.nomina-filtro-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
 .nomina-cards {
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
