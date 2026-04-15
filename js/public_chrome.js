@@ -1,9 +1,10 @@
 import "./mobile_shell.js";
+import { APP_ASSETS, GITHUB_PAGES_BASE_PATH } from "./urls.js";
 
 const getLogoSrc = () => {
   const path = window.location.pathname || "";
-  return path.startsWith("/Plataforma_Restaurantes/")
-    ? "/Plataforma_Restaurantes/images/Logo.webp"
+  return path.startsWith(`${GITHUB_PAGES_BASE_PATH}/`)
+    ? APP_ASSETS.logo
     : "/images/Logo.webp";
 };
 

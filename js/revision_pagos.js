@@ -1,6 +1,7 @@
 import { supabase } from "./supabase.js";
 import { esSuperAdmin } from "./permisos.core.js";
 import { getUserContext } from "./session.js";
+import { APP_URLS } from "./urls.js";
 import { WEBHOOKS } from "./webhooks.js";
 
 const bodyEl = document.getElementById("revisionBody");
@@ -172,7 +173,7 @@ async function notificarWebhook({ tipo, attemptId, observaciones }) {
 document.addEventListener("DOMContentLoaded", async () => {
   const ok = await esSuperAdmin().catch(() => false);
   if (!ok) {
-    window.location.replace("/Plataforma_Restaurantes/dashboard/");
+    window.location.replace(APP_URLS.dashboard);
     return;
   }
 
