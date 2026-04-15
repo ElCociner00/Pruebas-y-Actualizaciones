@@ -1,6 +1,7 @@
 import { supabase } from "./supabase.js";
 import { esSuperAdmin } from "./permisos.core.js";
 import { getSessionConEmpresa } from "./session.js";
+import { APP_URLS } from "./urls.js";
 import { resolveEmpresaPlan, normalizeEmpresaActiva } from "./plan.js";
 import { WEBHOOKS } from "./webhooks.js";
 
@@ -310,7 +311,7 @@ async function applyManualOverride() {
 document.addEventListener("DOMContentLoaded", async () => {
   const allowed = await esSuperAdmin().catch(() => false);
   if (!allowed) {
-    window.location.replace("/Plataforma_Restaurantes/dashboard/");
+    window.location.replace(APP_URLS.dashboard);
     return;
   }
 
@@ -322,7 +323,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnRecargar?.addEventListener("click", loadEmpresas);
 
   btnRevisionPagos?.addEventListener("click", () => {
-    window.location.assign("/Plataforma_Restaurantes/facturacion/revision_pagos.html");
+    window.location.assign(APP_URLS.revisionPagos);
   });
 
   btnApplyOverride?.addEventListener("click", applyManualOverride);
