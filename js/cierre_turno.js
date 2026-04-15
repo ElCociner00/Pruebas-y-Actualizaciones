@@ -865,7 +865,15 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((row) => row.visible)
       .map((row) => [row.nombre || "Gasto", row.input?.value || row.value || "0"]);
 
-    return { finanzas, gastos };
+    const totales = {
+      totalSistema: getTotalIngresosSistema(),
+      totalReal: getTotalIngresosReales(),
+      totalDiferencia: getTotalIngresosReales() - getTotalIngresosSistema(),
+      totalGastos: getTotalGastosExtras(),
+      ventaNeta: getTotalIngresosReales() - getTotalGastosExtras()
+    };
+
+    return { finanzas, gastos, totales };
   };
 
   const descargarImagenResumen = ({ bloquearDespues = false } = {}) => {
@@ -878,7 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const { finanzas, gastos } = buildSnapshotRows();
+    const { finanzas, gastos, totales } = buildSnapshotRows();
     const responsableTexto = responsable?.selectedOptions?.[0]?.textContent || "-";
     const horaLlegada = getHoraLlegadaCompleta() || "-";
     const empresaNombre = nombreEmpresaActual || "Empresa";
@@ -968,7 +976,15 @@ document.addEventListener("DOMContentLoaded", () => {
       tableY += rowH;
     });
 
-    y = tableY + 56;
+    drawRow(tableY, [
+      "TOTAL INGRESOS",
+      formatCOP(totales.totalSistema),
+      formatCOP(totales.totalReal),
+      formatCOP(totales.totalDiferencia)
+    ], true);
+
+    tableY += rowH;
+    y = tableY + 36;
     ctx.fillStyle = "#5b21b6";
     ctx.font = "bold 30px Arial";
     ctx.fillText("Gastos", cardX + 36, y);
@@ -1000,6 +1016,10 @@ document.addEventListener("DOMContentLoaded", () => {
       drawGasto(gastoY, [name, formatCOP(value)]);
       gastoY += rowH;
     });
+
+    drawGasto(gastoY, ["TOTAL GASTOS", formatCOP(totales.totalGastos)], true);
+    gastoY += rowH;
+    drawGasto(gastoY, ["VENTA NETA", formatCOP(totales.ventaNeta)], true);
 
     const selloY = cardY + cardH - 30;
     ctx.textAlign = "center";

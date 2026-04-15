@@ -1,3 +1,5 @@
+import { APP_URLS } from "./urls.js";
+
 const normalizeRole = (value) => String(value || "").trim().toLowerCase();
 const normalizeModule = (value) => String(value || "").trim().toLowerCase();
 
@@ -43,8 +45,8 @@ export function isEmergencyAllowed(role, moduleKey) {
 
 export function getEmergencyHomeByRole(role) {
   const roleKey = normalizeRole(role);
-  if (roleKey === "operativo") return "/Plataforma_Restaurantes/cierre_turno/";
-  return "/Plataforma_Restaurantes/dashboard/";
+  if (roleKey === "operativo") return APP_URLS.cierreTurno;
+  return APP_URLS.dashboard;
 }
 
 export function applyEmergencyRolePermissions(role, permisos) {

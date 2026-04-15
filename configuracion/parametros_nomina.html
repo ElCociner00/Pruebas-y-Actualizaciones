@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Parámetros nómina</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/configuracion.css">
+  <link rel="stylesheet" href="../css/nomina.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+  <script type="module" src="../js/header.js"></script>
+
+  <div class="main nomina-main">
+    <h1>Parámetros de nómina</h1>
+    <p class="intro">Define ingresos y deducciones por empresa. Si no hay datos, el módulo asumirá ceros para evitar errores.</p>
+
+    <section class="bloque">
+      <h2>Datos base</h2>
+      <div class="nomina-grid">
+        <label>Empresa
+          <input id="parametrosEmpresaNombre" type="text" readonly>
+        </label>
+        <label>NIT
+          <input id="parametrosEmpresaNit" type="text" readonly>
+        </label>
+      </div>
+      <div class="nomina-actions">
+        <button type="button" id="btnAgregarParametro">Agregar parámetro</button>
+        <button type="button" id="btnRecargarParametros">Recargar</button>
+      </div>
+    </section>
+
+    <section class="bloque">
+      <h2>Listado</h2>
+      <div class="tabla-wrap">
+        <table class="nomina-table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Valor</th>
+              <th>Unidad</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="parametrosNominaBody">
+            <tr><td colspan="5">Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="parametrosNominaStatus" class="status"></div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/parametros_nomina.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+  <script type="module" src="../js/module_fix/init.js"></script>
+</body>
+</html>

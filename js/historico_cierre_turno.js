@@ -851,11 +851,162 @@ const buildExcelTurnoBlock = (row) => {
   `;
 };
 
+const FLAT_EXCEL_HEADERS = [
+  "RESPONSABLE TURNO",
+  "FECHA TURNO",
+  "EFECTIVO SISTEMA",
+  "NEQUI SISTEMA",
+  "DAVIPLATA SISTEMA",
+  "TARJETA SISTEMA",
+  "TRANSFERENCIAS SISTEMA",
+  "EFECTIVO REAL",
+  "NEQUI REAL",
+  "DAVIPLATA REAL",
+  "TARJETA REAL",
+  "TRANSFERENCIA REAL",
+  "DIF EFECTIVO",
+  "DIF NEQUI",
+  "DIF DAVIPLATA",
+  "DIF TARJETA",
+  "DIF TRANSFERENCIAS",
+  "TOTAL SISTEMA",
+  "TOTAL REAL",
+  "DIF TOTAL",
+  "COMENTARIOS RESPONSABLES",
+  "REVISADO POR"
+];
+
+const getGeneralByCandidates = (general = {}, candidates = []) => {
+  for (const key of candidates) {
+    const value = general?.[key];
+    if (value !== undefined && value !== null && String(value).trim() !== "") return value;
+  }
+  return "";
+};
+
+const findDetailValue = (row, includeTerms = [], excludeTerms = []) => {
+  const terms = includeTerms.map((term) => String(term || "").toLowerCase());
+  const excludes = excludeTerms.map((term) => String(term || "").toLowerCase());
+  const detail = summarizeDetailByVariable(row).find((item) => {
+    const variable = String(item.variable || "").toLowerCase();
+    const matchesInclude = terms.some((term) => variable.includes(term));
+    const matchesExclude = excludes.some((term) => variable.includes(term));
+    return matchesInclude && !matchesExclude;
+  });
+  return detail || null;
+};
+
+const extractCanalValores = (row) => {
+  const general = row?.general || {};
+
+  const efectivoSistema = toNumericValue(getGeneralByCandidates(general, ["efectivo_sistema"]));
+  const efectivoReal = toNumericValue(getGeneralByCandidates(general, ["efectivo_real"]));
+
+  const nequiSistema = toNumericValue(getGeneralByCandidates(general, ["nequi_sistema"]));
+  const nequiReal = toNumericValue(getGeneralByCandidates(general, ["nequi_real"]));
+
+  const daviplataSistema = toNumericValue(getGeneralByCandidates(general, ["daviplata_sistema", "rappi_sistema"]));
+  const daviplataReal = toNumericValue(getGeneralByCandidates(general, ["daviplata_real", "rappi_real"]));
+
+  const tarjetaSistema = toNumericValue(getGeneralByCandidates(general, ["tarjeta_sistema", "datafono_sistema"]));
+  const tarjetaReal = toNumericValue(getGeneralByCandidates(general, ["tarjeta_real", "datafono_real"]));
+
+  const transferSistema = toNumericValue(getGeneralByCandidates(general, ["transferencias_sistema", "transferencia_sistema"]));
+  const transferReal = toNumericValue(getGeneralByCandidates(general, ["transferencias_real", "transferencia_real"]));
+
+  const fallback = (rawSistema, rawReal, detailIncludes) => {
+    let sistema = rawSistema;
+    let real = rawReal;
+    if (sistema !== null && real !== null) return { sistema, real };
+    const detail = findDetailValue(row, detailIncludes);
+    if (!detail) return { sistema, real };
+    if (sistema === null) sistema = toNumericValue(detail.sistema);
+    if (real === null) real = toNumericValue(detail.real);
+    return { sistema, real };
+  };
+
+  return {
+    efectivo: fallback(efectivoSistema, efectivoReal, ["efectivo"]),
+    nequi: fallback(nequiSistema, nequiReal, ["nequi"]),
+    daviplata: fallback(daviplataSistema, daviplataReal, ["daviplata", "rappi"]),
+    tarjeta: fallback(tarjetaSistema, tarjetaReal, ["tarjeta", "datafono"]),
+    transferencias: fallback(transferSistema, transferReal, ["transferencia"])
+  };
+};
+
+const toFlatExcelRow = (row) => {
+  const general = row?.general || {};
+  const canales = extractCanalValores(row);
+
+  const dif = (canal) => {
+    const real = canales?.[canal]?.real;
+    const sistema = canales?.[canal]?.sistema;
+    if (real === null || sistema === null) return 0;
+    return real - sistema;
+  };
+
+  const totalSistema = ["efectivo", "nequi", "daviplata", "tarjeta", "transferencias"]
+    .reduce((acc, key) => acc + (canales?.[key]?.sistema ?? 0), 0);
+  const totalReal = ["efectivo", "nequi", "daviplata", "tarjeta", "transferencias"]
+    .reduce((acc, key) => acc + (canales?.[key]?.real ?? 0), 0);
+  const difTotal = totalReal - totalSistema;
+
+  const revisadoPor = getGeneralByCandidates(general, ["revisado_por", "registrado_por", "usuario_revisor", "aprobado_por"]);
+  const comentarios = getGeneralByCandidates(general, ["comentarios_responsables", "comentarios", "observaciones"]);
+
+  return [
+    normalizeInlineText(formatCellValue(getGeneralByCandidates(general, ["responsable", "turno_responsable"]))),
+    normalizeInlineText(formatCellValue(getGeneralByCandidates(general, ["fecha_turno", "fecha"]))),
+    canales.efectivo.sistema ?? 0,
+    canales.nequi.sistema ?? 0,
+    canales.daviplata.sistema ?? 0,
+    canales.tarjeta.sistema ?? 0,
+    canales.transferencias.sistema ?? 0,
+    canales.efectivo.real ?? 0,
+    canales.nequi.real ?? 0,
+    canales.daviplata.real ?? 0,
+    canales.tarjeta.real ?? 0,
+    canales.transferencias.real ?? 0,
+    dif("efectivo"),
+    dif("nequi"),
+    dif("daviplata"),
+    dif("tarjeta"),
+    dif("transferencias"),
+    totalSistema,
+    totalReal,
+    difTotal,
+    normalizeInlineText(formatCellValue(comentarios)),
+    normalizeInlineText(formatCellValue(revisadoPor))
+  ];
+};
+
 const downloadExcel = (rows, fileName) => {
   if (!rows.length) return setStatus("No hay turnos para descargar con esos criterios.");
 
-  const blocks = rows.map(buildExcelTurnoBlock).join("");
-  const html = `<html><head><meta charset="utf-8"/>${buildExcelStyles()}</head><body>${blocks}</body></html>`;
+  const headersHtml = FLAT_EXCEL_HEADERS.map((header) => `<th>${escapeHtml(header)}</th>`).join("");
+  const rowsHtml = rows
+    .map((row) => {
+      const cells = toFlatExcelRow(row)
+        .map((value) => `<td>${escapeHtml(formatCellValue(value))}</td>`)
+        .join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+  const html = `
+    <html>
+      <head>
+        <meta charset="utf-8"/>
+      </head>
+      <body>
+        <table border="1">
+          <thead><tr>${headersHtml}</tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </body>
+    </html>
+  `;
+
   const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -863,7 +1014,7 @@ const downloadExcel = (rows, fileName) => {
   a.download = fileName;
   a.click();
   URL.revokeObjectURL(url);
-  setStatus(`Excel generado: ${rows.length} turno(s).`);
+  setStatus(`Excel plano generado: ${rows.length} turno(s).`);
 };
 
 const downloadTurnoPng = (row) => {
