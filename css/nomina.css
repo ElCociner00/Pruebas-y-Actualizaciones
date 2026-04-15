@@ -151,3 +151,24 @@
   border-radius: 8px;
   background: #eef2ff;
 }
+
+
+.comprobante-resumen-movimientos {
+  margin-top: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+}
+
+.comprobante-resumen-movimientos h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+}
+
+.comprobante-resumen-movimientos ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}

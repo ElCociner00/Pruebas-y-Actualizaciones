@@ -86,6 +86,11 @@ export const WEBHOOK_ALERTA_MANIPULACION_CIERRE =
   "https://tu-n8n-instancia.com/webhook/alerta-manipulacion-cierre";
 
 
+
+// nomina/index.html (consulta y transformación de datos de nómina por período)
+export const WEBHOOK_NOMINA_TRANSFORMACION =
+  "https://n8n.globalnexoshop.com/webhook/nomina_transformacion";
+
 // siigo/subir_facturas_siigo/index.html (consultar facturas desde correo)
 export const WEBHOOK_CARGAR_FACTURAS_CORREO =
   "https://n8n.globalnexoshop.com/webhook/cargar_facturas_correo";
@@ -178,4 +183,12 @@ WEBHOOKS.BILLING_CREAR_CICLOS = {
   archivos_que_usan: ["n8n workflow", "docs/operacion"],
   metodo: "POST",
   descripcion: "Crea ciclos mensuales de facturacion"
+};
+
+
+WEBHOOKS.NOMINA_TRANSFORMACION = {
+  url: "https://n8n.globalnexoshop.com/webhook/nomina_transformacion",
+  archivos_que_usan: ["js/nomina.js"],
+  metodo: "POST",
+  descripcion: "Transforma y resume datos de movimientos para liquidación de nómina"
 };

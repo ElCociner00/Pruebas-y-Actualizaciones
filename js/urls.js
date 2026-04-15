@@ -32,6 +32,7 @@ export const APP_URLS = {
   subirFacturasSiigo: route("/siigo/subir_facturas_siigo/"),
   historicoFacturasSiigo: route("/siigo/subir_facturas_siigo/"),
   nomina: route("/nomina/"),
+  configuracionNominaParametros: route("/configuracion/parametros_nomina.html"),
   legalTerminos: route("/legal/terminos.html"),
   legalPrivacidad: route("/legal/privacidad.html"),
   legalCookies: route("/legal/cookies.html"),
