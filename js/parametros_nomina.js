@@ -1,8 +1,6 @@
 import { getUserContext } from "./session.js";
 import { supabase } from "./supabase.js";
 
-const empresaNombreInput = document.getElementById("parametrosEmpresaNombre");
-const empresaNitInput = document.getElementById("parametrosEmpresaNit");
 const tablaBody = document.getElementById("parametrosNominaBody");
 const statusEl = document.getElementById("parametrosNominaStatus");
 const btnAgregar = document.getElementById("btnAgregarParametro");
@@ -74,17 +72,6 @@ const getRowPayload = (tr) => ({
   valor: parseNumber(tr.querySelector('[data-field="valor"]')?.value || 0),
   unidad: String(tr.querySelector('[data-field="unidad"]')?.value || "pesos").trim() || "pesos"
 });
-
-const loadEmpresa = async (empresaId) => {
-  const { data } = await supabase
-    .from("empresas")
-    .select("nombre_comercial,nit")
-    .eq("id", empresaId)
-    .maybeSingle();
-  state.empresa = data || null;
-  if (empresaNombreInput) empresaNombreInput.value = state.empresa?.nombre_comercial || "";
-  if (empresaNitInput) empresaNitInput.value = state.empresa?.nit || "";
-};
 
 const loadRows = async () => {
   if (!state.context?.empresa_id) return;
@@ -203,7 +190,6 @@ const init = async () => {
     return;
   }
 
-  await loadEmpresa(state.context.empresa_id);
   await loadRows();
 };
 

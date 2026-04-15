@@ -4,13 +4,13 @@ import { getActiveEnvironment } from "./environment.js";
 import { supabase } from "./supabase.js";
 import { WEBHOOK_NOMINA_TRANSFORMACION } from "./webhooks.js";
 
-const empresaInput = document.getElementById("nominaEmpresa");
 const fechaInicioInput = document.getElementById("nominaFechaInicio");
 const fechaFinInput = document.getElementById("nominaFechaFin");
 const corteSelect = document.getElementById("nominaCorte");
 const empleadoSelect = document.getElementById("nominaEmpleado");
 const consultarBtn = document.getElementById("consultarNomina");
 const descargarBtn = document.getElementById("descargarComprobanteNomina");
+const filtrosParametrosWrap = document.getElementById("nominaFiltrosParametros");
 
 const totalDevengadoEl = document.getElementById("nominaTotalDevengado");
 const totalDeduccionesEl = document.getElementById("nominaTotalDeducciones");
@@ -36,6 +36,7 @@ const state = {
   ingresos: [],
   deducciones: [],
   tablaDetalle: [],
+  conceptosActivos: {},
   resumenMovimientos: {
     inventarios: "Sin datos",
     cierre_turno: "Sin datos",
@@ -59,13 +60,57 @@ const setStatus = (message) => {
   if (statusEl) statusEl.textContent = message || "";
 };
 
+const DAYS_BY_CORTE = {
+  semanal: 7,
+  quincenal: 15,
+  mensual: 30,
+  trimestral: 90,
+  semestral: 182,
+  anual: 365
+};
+
+const toInputDate = (date) => date.toISOString().slice(0, 10);
+const parseInputDate = (value) => {
+  if (!value) return null;
+  const [year, month, day] = String(value).split("-").map(Number);
+  if (!year || !month || !day) return null;
+  return new Date(Date.UTC(year, month - 1, day));
+};
+
+const diffInDaysInclusive = (startDate, endDate) => {
+  if (!startDate || !endDate) return 0;
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const diff = Math.floor((endDate.getTime() - startDate.getTime()) / msPerDay) + 1;
+  return diff > 0 ? diff : 0;
+};
+
+const findCorteByDates = (startRaw, endRaw) => {
+  const start = parseInputDate(startRaw);
+  const end = parseInputDate(endRaw);
+  const days = diffInDaysInclusive(start, end);
+  const found = Object.entries(DAYS_BY_CORTE).find(([, value]) => value === days);
+  return found?.[0] || "personalizado";
+};
+
+const applyCortePreset = (corte) => {
+  if (!DAYS_BY_CORTE[corte]) return;
+  const endDate = parseInputDate(fechaFinInput.value) || new Date();
+  const startDate = new Date(endDate.getTime());
+  startDate.setUTCDate(startDate.getUTCDate() - (DAYS_BY_CORTE[corte] - 1));
+  fechaInicioInput.value = toInputDate(startDate);
+  fechaFinInput.value = toInputDate(endDate);
+};
+
+const syncCorteWithDates = () => {
+  const detected = findCorteByDates(fechaInicioInput.value, fechaFinInput.value);
+  corteSelect.value = detected;
+};
+
 const setDefaultDates = () => {
   const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth(), 15);
-  fechaInicioInput.value = start.toISOString().slice(0, 10);
-  fechaFinInput.value = end.toISOString().slice(0, 10);
+  fechaFinInput.value = toInputDate(now);
   corteSelect.value = "quincenal";
+  applyCortePreset("quincenal");
 };
 
 const canAccess = (role) => {
@@ -122,7 +167,25 @@ const renderResumenMovimientos = () => {
   `;
 };
 
+const getConceptoKey = (item) => {
+  const concepto = String(item?.concepto || "").trim().toLowerCase();
+  const tipo = String(item?.tipo || "").trim().toUpperCase();
+  const fuente = String(item?.fuente || "").trim().toLowerCase();
+  return `${tipo}|${concepto}|${fuente}`;
+};
+
+const isConceptoActivo = (item) => {
+  const key = getConceptoKey(item);
+  if (typeof state.conceptosActivos[key] === "boolean") {
+    return state.conceptosActivos[key];
+  }
+  return true;
+};
+
+const getItemsActivos = (list) => (Array.isArray(list) ? list : []).filter((item) => isConceptoActivo(item));
+
 const sumItems = (list) => (Array.isArray(list) ? list : []).reduce((acc, item) => {
+  if (!isConceptoActivo(item)) return acc;
   const cantidad = asNumber(item.cantidad || 1);
   const valor = asNumber(item.valor);
   return acc + (cantidad * valor);
@@ -141,31 +204,61 @@ const renderResumen = () => {
 };
 
 const renderMovimientos = () => {
-  if (!state.tablaDetalle.length) {
+  const tablaActiva = state.tablaDetalle.map((item) => ({
+    ...item,
+    activo: isConceptoActivo(item)
+  }));
+
+  if (!tablaActiva.length) {
     movimientosBody.innerHTML = "<tr><td colspan='6'>No hay movimientos para este período y empleado.</td></tr>";
   } else {
-    movimientosBody.innerHTML = state.tablaDetalle.map((item) => `
+    movimientosBody.innerHTML = tablaActiva.map((item) => `
       <tr>
         <td>${item.empleado_nombre || "-"}</td>
         <td>${item.concepto || "-"}</td>
         <td>${item.tipo || "-"}</td>
         <td>${fmtMoney(asNumber(item.valor) * asNumber(item.cantidad || 1))}</td>
         <td>${item.fuente || "-"}</td>
-        <td>${item.estado || "Liquidable"}</td>
+        <td>${item.activo ? (item.estado || "Liquidable") : "Excluido del cálculo"}</td>
       </tr>
     `).join("");
   }
 
-  ingresosBody.innerHTML = (state.ingresos.length ? state.ingresos : [{ concepto: "Sin ingresos", cantidad: 0, valor: 0 }])
+  const ingresosActivos = getItemsActivos(state.ingresos);
+  const deduccionesActivas = getItemsActivos(state.deducciones);
+
+  ingresosBody.innerHTML = (ingresosActivos.length ? ingresosActivos : [{ concepto: "Sin ingresos", cantidad: 0, valor: 0 }])
     .map((item) => `<tr><td>${item.concepto}</td><td>${asNumber(item.cantidad)}</td><td>${fmtMoney(asNumber(item.valor) * asNumber(item.cantidad || 1))}</td></tr>`)
     .join("");
 
-  deduccionesBody.innerHTML = (state.deducciones.length ? state.deducciones : [{ concepto: "Sin deducciones", cantidad: 0, valor: 0 }])
+  deduccionesBody.innerHTML = (deduccionesActivas.length ? deduccionesActivas : [{ concepto: "Sin deducciones", cantidad: 0, valor: 0 }])
     .map((item) => `<tr><td>${item.concepto}</td><td>${asNumber(item.cantidad)}</td><td>${fmtMoney(asNumber(item.valor) * asNumber(item.cantidad || 1))}</td></tr>`)
     .join("");
 
   renderResumen();
   renderResumenMovimientos();
+};
+
+const renderFiltrosParametros = () => {
+  if (!filtrosParametrosWrap) return;
+  const allItems = [...state.ingresos, ...state.deducciones];
+  if (!allItems.length) {
+    filtrosParametrosWrap.innerHTML = "<p>No hay datos para filtrar todavía.</p>";
+    return;
+  }
+
+  const uniqueItems = new Map();
+  allItems.forEach((item) => {
+    const key = getConceptoKey(item);
+    if (!uniqueItems.has(key)) uniqueItems.set(key, item);
+  });
+
+  filtrosParametrosWrap.innerHTML = [...uniqueItems.entries()].map(([key, item]) => `
+    <label class="nomina-filtro-item">
+      <input type="checkbox" data-concepto-key="${key}" ${isConceptoActivo(item) ? "checked" : ""}>
+      <span>${item.concepto || "Concepto"} · ${item.tipo || "-"} · ${item.fuente || "sistema"}</span>
+    </label>
+  `).join("");
 };
 
 const renderComprobanteHeader = (empleado) => {
@@ -258,6 +351,7 @@ const mergeNominaData = ({ webhookData, empleado }) => {
     horas_trabajadas: asNumber(resumen?.horas_trabajadas),
     observaciones: Array.isArray(resumen?.observaciones) ? resumen.observaciones : []
   };
+  renderFiltrosParametros();
 };
 
 const consultarNomina = async () => {
@@ -284,7 +378,7 @@ const consultarNomina = async () => {
     empresa_id: state.context.empresa_id,
     empleado_id: empleadoId,
     empleado_nombre: empleado?.nombre_completo || "",
-    corte: corteSelect.value || "quincenal",
+    corte: corteSelect.value || "personalizado",
     fecha_inicio: fechaInicioInput.value,
     fecha_fin: fechaFinInput.value,
     entorno: getActiveEnvironment() || "global"
@@ -435,7 +529,6 @@ const init = async () => {
     return;
   }
 
-  empresaInput.value = state.context.empresa_id;
   state.responsables = await fetchResponsablesActivos(state.context.empresa_id).catch(() => []);
   renderEmpleadoOptions();
 
@@ -449,11 +542,26 @@ const init = async () => {
   empresaNitEl.textContent = `NIT ${state.empresa?.nit || "-"}`;
 
   await loadParametrosNomina(state.context.empresa_id);
+  renderFiltrosParametros();
   renderMovimientos();
   setStatus(`Módulo de nómina listo en modo compartido (${getActiveEnvironment() || "global"}).`);
 };
 
 consultarBtn?.addEventListener("click", consultarNomina);
 descargarBtn?.addEventListener("click", descargarComprobante);
+corteSelect?.addEventListener("change", () => {
+  const selected = corteSelect.value;
+  if (selected === "personalizado") return;
+  applyCortePreset(selected);
+});
+
+fechaInicioInput?.addEventListener("change", syncCorteWithDates);
+fechaFinInput?.addEventListener("change", syncCorteWithDates);
+filtrosParametrosWrap?.addEventListener("change", (event) => {
+  const input = event.target.closest('input[type="checkbox"][data-concepto-key]');
+  if (!input) return;
+  state.conceptosActivos[input.dataset.conceptoKey] = input.checked;
+  renderMovimientos();
+});
 
 init();
