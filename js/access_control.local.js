@@ -10,6 +10,7 @@ export const LOCAL_ROLE_ACCESS = {
   admin: { all: true },
   operativo: {
     cierre_turno: true,
+    cierre_turno_anteriores: true,
     historico_cierre_turno: true,
     cierre_inventarios: true,
     historico_cierre_inventarios: true,
@@ -27,6 +28,7 @@ export const LOCAL_ROLE_ACCESS = {
 export const MODULE_ROUTE_MAP = {
   dashboard: APP_URLS.dashboard,
   cierre_turno: APP_URLS.cierreTurno,
+  cierre_turno_anteriores: APP_URLS.cierreTurnoAntiguos,
   historico_cierre_turno: APP_URLS.cierreTurnoHistorico,
   cierre_inventarios: APP_URLS.cierreInventarios,
   historico_cierre_inventarios: APP_URLS.cierreInventariosHistorico,
@@ -53,6 +55,7 @@ export const MODULE_ROUTE_MAP = {
 const LOGGRO_PRIORITY = [
   "dashboard",
   "cierre_turno",
+  "cierre_turno_anteriores",
   "cierre_inventarios",
   "historico_cierre_turno",
   "historico_cierre_inventarios",
@@ -82,6 +85,7 @@ const SIIGO_PRIORITY = [
 export const MODULE_ENV_MAP = {
   dashboard: ENV_LOGGRO,
   cierre_turno: ENV_LOGGRO,
+  cierre_turno_anteriores: ENV_LOGGRO,
   historico_cierre_turno: ENV_LOGGRO,
   cierre_inventarios: ENV_LOGGRO,
   historico_cierre_inventarios: ENV_LOGGRO,

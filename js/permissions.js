@@ -1,6 +1,7 @@
 export const PAGE_ENVIRONMENT = {
   dashboard: "loggro",
   cierre_turno: "loggro",
+  cierre_turno_anteriores: "loggro",
   historico_cierre_turno: "loggro",
   cierre_inventarios: "loggro",
   historico_cierre_inventarios: "loggro",
@@ -28,6 +29,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
   admin_root: {
     dashboard: true,
     cierre_turno: true,
+    cierre_turno_anteriores: true,
     historico_cierre_turno: true,
     cierre_inventarios: true,
     historico_cierre_inventarios: true,
@@ -53,6 +55,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
   admin: {
     dashboard: true,
     cierre_turno: true,
+    cierre_turno_anteriores: true,
     historico_cierre_turno: true,
     cierre_inventarios: true,
     historico_cierre_inventarios: true,
@@ -78,6 +81,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
   revisor: {
     dashboard: true,
     cierre_turno: true,
+    cierre_turno_anteriores: true,
     historico_cierre_turno: true,
     cierre_inventarios: true,
     historico_cierre_inventarios: true,
@@ -103,6 +107,7 @@ export const DEFAULT_ROLE_PERMISSIONS = {
   operativo: {
     dashboard: false,
     cierre_turno: true,
+    cierre_turno_anteriores: true,
     historico_cierre_turno: false,
     cierre_inventarios: true,
     historico_cierre_inventarios: false,
