@@ -1,0 +1,70 @@
+.grid-base {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.finanzas-grid-simple {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.finanzas-grid-simple .k,
+.finanzas-grid-simple .v {
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.turnos-wrap {
+  margin-top: 14px;
+  display: grid;
+  gap: 16px;
+}
+
+.turno-card {
+  border: 1px solid #dbe4ff;
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fbff;
+}
+
+.turno-card h3 {
+  margin-top: 0;
+}
+
+.turno-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.tabla-campos {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 6px;
+  align-items: center;
+}
+
+.tabla-campos .th {
+  font-weight: 700;
+  font-size: 12px;
+  color: #334155;
+}
+
+.tabla-campos input {
+  width: 100%;
+}
+
+.estado {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.estado.error { color: #b91c1c; }
+.estado.ok { color: #166534; }
+.estado.warn { color: #92400e; }
