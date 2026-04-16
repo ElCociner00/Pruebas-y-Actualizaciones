@@ -78,6 +78,7 @@ function buildMenu({ context, environmentForMenu }) {
         <button type="button" class="nav-dropdown-toggle">Cierre de turno</button>
         <div class="nav-dropdown-menu">
           <a href="${APP_URLS.cierreTurno}">Cierre de Turno</a>
+          <a href="${APP_URLS.cierreTurnoAntiguos}">Cierre turnos antiguos</a>
           <a href="${APP_URLS.cierreTurnoHistorico}">Historico cierre turno</a>
         </div>
       </div>

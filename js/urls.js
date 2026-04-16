@@ -10,6 +10,7 @@ export const APP_URLS = {
   registroIndex: route("/registro/index.html"),
   registroUsuario: route("/registro/usuario.html"),
   cierreTurno: route("/cierre_turno/"),
+  cierreTurnoAntiguos: route("/cierre_turno/turnos_anteriores.html"),
   cierreTurnoHistorico: route("/cierre_turno/historico_cierre_turno.html"),
   cierreInventarios: route("/cierre_inventarios/"),
   cierreInventariosHistorico: route("/cierre_inventarios/historico_cierre_inventarios.html"),
