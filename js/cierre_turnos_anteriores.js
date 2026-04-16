@@ -91,13 +91,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     totalesDia.innerHTML = "";
     Object.entries(labels).forEach(([key, label]) => {
-      const k = document.createElement("div");
-      k.className = "k";
-      k.textContent = label;
-      const v = document.createElement("div");
-      v.className = "v";
-      v.textContent = String(totals[key] || 0);
-      totalesDia.append(k, v);
+      const card = document.createElement("article");
+      card.className = "total-card";
+      card.innerHTML = `
+        <span class="total-label">${label}</span>
+        <strong>${String(totals[key] || 0)}</strong>
+      `;
+      totalesDia.append(card);
     });
   };
 
@@ -186,10 +186,21 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const buildRow = (label, field) => `
-    <div>${label}</div>
-    <input data-field="${field}" data-col="sistema" type="text" inputmode="numeric" pattern="[0-9]*">
-    <input data-field="${field}" data-col="real" type="text" inputmode="numeric" pattern="[0-9]*">
-    <input data-field="${field}" data-col="diferencia" type="text" readonly>
+    <div class="field-row">
+      <div class="field-title">${label}</div>
+      <label class="field-cell">
+        <span>Sistema</span>
+        <input data-field="${field}" data-col="sistema" type="text" inputmode="numeric" pattern="[0-9]*">
+      </label>
+      <label class="field-cell">
+        <span>Real</span>
+        <input data-field="${field}" data-col="real" type="text" inputmode="numeric" pattern="[0-9]*">
+      </label>
+      <label class="field-cell">
+        <span>Diferencia</span>
+        <input data-field="${field}" data-col="diferencia" type="text" readonly>
+      </label>
+    </div>
   `;
 
   const createTurnoCard = (idx) => {
@@ -219,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
 
       <div class="tabla-campos">
-        <div class="th">Concepto</div><div class="th">Sistema</div><div class="th">Real</div><div class="th">Diferencia</div>
+        <div class="table-title">Detalle financiero del turno</div>
         ${buildRow("Efectivo", "efectivo")}
         ${buildRow("Datáfono", "datafono")}
         ${buildRow("Rappi", "rappi")}

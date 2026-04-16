@@ -11,7 +11,10 @@
   <script type="module" src="../js/header.js"></script>
 
   <div class="main">
-    <h1>Cierre de turnos antiguos</h1>
+    <div class="brand-hero">
+      <h1>Cierre de turnos antiguos</h1>
+      <p>Reconstruye un día completo y divídelo en varios turnos usando el mismo flujo de cierre estándar.</p>
+    </div>
 
     <section class="bloque">
       <h2>Consulta general del día</h2>
@@ -25,25 +28,28 @@
         <button id="consultarTotales" type="button">Consultar totales Loggro</button>
         <button id="consultarGastos" type="button">Consultar gastos del día</button>
       </div>
+      <p class="hint-block">La consulta usa un rango interno de día completo para compensar desfases de API y traer el total consolidado.</p>
       <p id="estado" class="estado"></p>
     </section>
 
     <section class="bloque">
       <h2>Totales del día (sistema)</h2>
-      <div class="finanzas-grid finanzas-grid-simple" id="totalesDia"></div>
+      <div class="totales-cards" id="totalesDia"></div>
     </section>
 
     <section class="bloque">
       <h2>Distribución por turnos</h2>
-      <label>
-        ¿Cuántos turnos subirás?
-        <select id="cantidadTurnos">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
-      </label>
+      <div class="grid-base">
+        <label>
+          ¿Cuántos turnos subirás?
+          <select id="cantidadTurnos">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+      </div>
 
       <div id="contenedorTurnos" class="turnos-wrap"></div>
 
