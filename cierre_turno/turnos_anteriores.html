@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Cierre turnos anteriores</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/cierre_turnos_anteriores.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+  <script type="module" src="../js/header.js"></script>
+
+  <div class="main">
+    <div class="brand-hero">
+      <h1>Cierre de turnos antiguos</h1>
+      <p>Reconstruye un día completo y divídelo en varios turnos usando el mismo flujo de cierre estándar.</p>
+    </div>
+
+    <section class="bloque">
+      <h2>Consulta general del día</h2>
+      <div class="grid-base">
+        <label>
+          Fecha del día a reconstruir
+          <input id="fechaDia" type="date">
+        </label>
+      </div>
+      <div class="acciones-cierre">
+        <button id="consultarTotales" type="button">Consultar totales Loggro</button>
+        <button id="consultarGastos" type="button">Consultar gastos del día</button>
+      </div>
+      <p class="hint-block">La consulta usa un rango interno de día completo para compensar desfases de API y traer el total consolidado.</p>
+      <p id="estado" class="estado"></p>
+    </section>
+
+    <section class="bloque">
+      <h2>Totales del día (sistema)</h2>
+      <div class="totales-cards" id="totalesDia"></div>
+    </section>
+
+    <section class="bloque">
+      <h2>Distribución por turnos</h2>
+      <div class="grid-base">
+        <label>
+          ¿Cuántos turnos subirás?
+          <select id="cantidadTurnos">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="contenedorTurnos" class="turnos-wrap"></div>
+
+      <div class="acciones-cierre">
+        <button id="verificarTotales" type="button">Verificar distribución</button>
+        <button id="subirTurnos" type="button" disabled>Subir turnos antiguos</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/cierre_turnos_anteriores.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+.main {
+  max-width: 1000px;
+  overflow-x: clip;
+}
+
+.brand-hero {
+  margin-bottom: 16px;
+}
+
+.brand-hero h1 {
+  margin-bottom: 6px;
+}
+
+.brand-hero p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.bloque {
+  margin-bottom: 20px;
+}
+
+.grid-base {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+
+.hint-block {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd6fe;
+  background: #f5f3ff;
+  color: #5b21b6;
+  font-size: 0.86rem;
+}
+
+.totales-cards {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.total-card {
+  border: 1px solid #ddd6fe;
+  border-radius: 10px;
+  background: #faf5ff;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.total-label {
+  color: #6b21a8;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.total-card strong {
+  color: #312e81;
+  font-size: 1rem;
+}
+
+.turnos-wrap {
+  margin-top: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.turno-card {
+  border: 1px solid #d8d2ff;
+  border-radius: 12px;
+  padding: 14px;
+  background: linear-gradient(180deg, #fafaff 0%, #f8fbff 100%);
+}
+
+.turno-card h3 {
+  margin: 0 0 10px;
+  color: #312e81;
+}
+
+.turno-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.turno-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.88rem;
+}
+
+.tabla-campos {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.table-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: 1px solid #ede9fe;
+  padding-bottom: 6px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.3fr) repeat(3, minmax(120px, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+
+.field-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.field-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-cell > span {
+  font-size: 0.74rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.field-cell input {
+  width: 100%;
+}
+
+textarea[data-role="comentarios"] {
+  margin-top: 10px;
+  min-height: 68px;
+}
+
+.acciones-cierre {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.acciones-cierre button {
+  flex: 1 1 220px;
+}
+
+.estado {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.estado.error { color: #b91c1c; }
+.estado.ok { color: #166534; }
+.estado.warn { color: #92400e; }
+
+@media (max-width: 900px) {
+  .main {
+    max-width: 100%;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    padding: 10px;
+    border: 1px solid #f1f5f9;
+    border-radius: 8px;
+    background: #fcfcff;
+  }
+
+  .field-title {
+    margin-bottom: 2px;
+  }
+
+  .field-cell > span {
+    font-size: 0.72rem;
+  }
+
+  .turno-card {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .bloque {
+    padding: 12px;
+  }
+
+  .acciones-cierre button {
+    flex: 1 1 100%;
+  }
+
+  .total-card strong {
+    font-size: 0.96rem;
+  }
+}
