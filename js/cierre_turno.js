@@ -566,11 +566,21 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${fechaValue.replace(/-/g, "/")}T00:00:00`;
   };
 
-  const getMomentoDia = (timeValue) => {
+const getMomentoDia = (timeValue) => {
     if (!timeValue) return "";
     const [hour] = timeValue.split(":").map(Number);
     if (Number.isNaN(hour)) return "";
     return hour >= 12 ? "PM" : "AM";
+  };
+
+  const CREDENCIALES_GUIDE_KEY = "loggro_credenciales_onboarding";
+  const activarGuiaCredenciales = () => {
+    localStorage.setItem(CREDENCIALES_GUIDE_KEY, JSON.stringify({
+      activo: true,
+      paso: "header_configuracion",
+      updated_at: new Date().toISOString()
+    }));
+    document.body.classList.add("loggro-onboarding-activo");
   };
 
 
@@ -1174,6 +1184,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await readResponseBody(res);
       if (!res.ok) {
         setStatus(data?.message || `Error al consultar gastos (HTTP ${res.status}).`);
+        return;
+      }
+      if (data?.ok === false) {
+        const message = String(data?.message || "No se pudieron consultar gastos.");
+        setStatus(message);
+        if (message.toLowerCase().includes("no has configurado credenciales para loggroo")) {
+          activarGuiaCredenciales();
+        }
         return;
       }
       const extras = normalizeExtras(data);

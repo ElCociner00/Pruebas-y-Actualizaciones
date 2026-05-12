@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Gestión de personal</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/gestion_usuarios.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+  <script type="module" src="../js/header.js"></script>
+
+  <div class="main">
+    <h1>Gestión de personal</h1>
+    <p class="intro">Administra usuarios y crea perfiles nuevos desde un solo módulo.</p>
+    <div id="gestionUsuariosEstado" class="status"></div>
+    <div id="gestionUsuariosPanel"></div>
+
+    <section class="bloque">
+      <h2>Crear nuevo usuario</h2>
+      <label for="tipoAltaUsuario">Selecciona el tipo de registro</label>
+      <select id="tipoAltaUsuario">
+        <option value="">Selecciona una opción</option>
+        <option value="empleado">Empleado</option>
+        <option value="otro">Admin o Revisor</option>
+      </select>
+
+      <div id="altaEmpleadoWrap" class="is-hidden" style="margin-top:12px;">
+        <iframe title="Registro empleado" src="../configuracion/registro_empleados.html" style="width:100%;min-height:840px;border:1px solid #d1d5db;border-radius:10px;"></iframe>
+      </div>
+      <div id="altaOtroWrap" class="is-hidden" style="margin-top:12px;">
+        <iframe title="Registro admin o revisor" src="../configuracion/registro_otros_usuarios.html" style="width:100%;min-height:860px;border:1px solid #d1d5db;border-radius:10px;"></iframe>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/gestion_usuarios.js"></script>
+  <script type="module" src="../js/gestion_personal.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+</body>
+</html>

@@ -73,3 +73,14 @@
   font-size: 0.85rem;
   color: #4b5563;
 }
+
+.password-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-ojito {
+  width: auto;
+  padding: 8px 10px;
+}

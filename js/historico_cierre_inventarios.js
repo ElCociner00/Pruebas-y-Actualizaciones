@@ -356,9 +356,9 @@ const loadData = async () => {
     state.visibleDetailColumns = ordered.filter((col) => detailColumnsVisibility[col] !== false);
 
     applyFilters();
-    setStatus(rows.length ? "historico cargado." : "No hay datos historicos.");
+    setStatus(rows.length ? "Histórico cargado correctamente." : "Aún no tienes cierres de inventario para mostrar.");
   } catch (error) {
-    setStatus("Error cargando historico de inventarios.");
+    setStatus("No fue posible cargar el histórico de inventarios. Verifica credenciales o intenta nuevamente.");
   }
 };
 
