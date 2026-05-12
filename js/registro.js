@@ -18,6 +18,16 @@ const codigoInput = document.getElementById("codigo");
 const aceptaPoliticasInput = document.getElementById("acepta_politicas");
 
 enforceNumericInput([nitInput, codigoInput]);
+const normalizeBusinessText = (value) => String(value || "")
+  .replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, "")
+  .replace(/\s+/g, " ")
+  .trim();
+
+[nombreComercialInput, razonSocialInput].forEach((input) => {
+  input?.addEventListener("input", () => {
+    input.value = normalizeBusinessText(input.value);
+  });
+});
 
 let datosEmpresa = null;
 let codigoValidado = false;

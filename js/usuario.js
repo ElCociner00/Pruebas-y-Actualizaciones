@@ -6,7 +6,7 @@ const form = document.getElementById("registroUsuario");
 const nombreVisibleInput = document.getElementById("nombre_visible");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
-const correoSugerido = document.getElementById("correoSugerido");
+const togglePasswordBtn = document.getElementById("togglePassword");
 
 // 🔍 Recuperamos el NIT de la sesión
 const empresaNIT = sessionStorage.getItem("empresa_nit");
@@ -18,9 +18,17 @@ if (!empresaNIT) {
   throw new Error("NIT no encontrado en sessionStorage");
 }
 
-if (empresaCorreo && correoSugerido) {
-  correoSugerido.textContent = `Sugerido: ${empresaCorreo}`;
-}
+const normalizeTextValue = (value) => String(value || "").replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, "").replace(/\s+/g, " ").trim();
+
+nombreVisibleInput?.addEventListener("input", () => {
+  nombreVisibleInput.value = normalizeTextValue(nombreVisibleInput.value);
+});
+
+togglePasswordBtn?.addEventListener("click", () => {
+  const shouldShow = passwordInput.type === "password";
+  passwordInput.type = shouldShow ? "text" : "password";
+  togglePasswordBtn.textContent = shouldShow ? "🙈" : "👁";
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();

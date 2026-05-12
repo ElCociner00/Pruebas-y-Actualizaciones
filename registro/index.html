@@ -12,10 +12,14 @@
     <h1>Registrar Empresa</h1>
 
     <form id="registroEmpresa">
-      <input type="text" id="nombre_comercial" placeholder="Nombre comercial" required>
-      <input type="text" id="razon_social" placeholder="Razón social" required>
-      <input type="text" id="nit" placeholder="NIT" inputmode="numeric" pattern="[0-9]*" required>
-      <input type="email" id="correo_empresa" placeholder="Correo de la empresa" required>
+      <label for="nombre_comercial">Nombre comercial</label>
+      <input type="text" id="nombre_comercial" required>
+      <label for="razon_social">Razón social</label>
+      <input type="text" id="razon_social" required>
+      <label for="nit">NIT (sin dígito de verificación)</label>
+      <input type="text" id="nit" inputmode="numeric" pattern="[0-9]*" required>
+      <label for="correo_empresa">Correo de la empresa</label>
+      <input type="email" id="correo_empresa" required>
 
       <label class="consentimiento-legal">
         <input type="checkbox" id="acepta_politicas" required>
