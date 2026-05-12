@@ -607,8 +607,8 @@ const renderSimilarMatches = (rows, query, label) => {
 const applyFilters = () => {
   const fechaDesde = filtroFechaDesde.value;
   const fechaHasta = filtroFechaHasta.value;
-  const horaInicio = filtroHoraInicio.value;
-  const horaFin = filtroHoraFin.value;
+  const horaInicio = filtroHoraInicio?.value || "";
+  const horaFin = filtroHoraFin?.value || "";
   const numeroTurno = filtroNumeroTurno?.value?.trim() || "";
 
   const fechaCol = getCandidateColumn(state.allGeneralColumns, ["fecha", "date"]);
@@ -1240,7 +1240,8 @@ const loadInitialData = async () => {
       );
 
       if (webhookResponse.ok) {
-        rowsData = await webhookResponse.json();
+        const raw = await webhookResponse.text();
+        rowsData = raw ? JSON.parse(raw) : {};
       } else if (!rowsError) {
         rowsData = directRows || [];
       } else {
@@ -1285,7 +1286,7 @@ const loadInitialData = async () => {
     } else {
       const message = error?.message || "Error desconocido";
       const isAccessError = /permission|rls|jwt|not authorized|forbidden/i.test(message);
-      setStatus((isAccessError ? "No tienes acceso a este histórico: " : "Error cargando histórico: ") + message);
+      setStatus((isAccessError ? "No tienes acceso a este histórico: " : "No pudimos cargar el histórico. ") + "Verifica tus credenciales de Loggro e inténtalo de nuevo.");
     }
   } finally {
     setLoading(false);
@@ -1297,8 +1298,8 @@ btnAplicarFiltros.addEventListener("click", applyFilters);
 btnLimpiarFiltros.addEventListener("click", () => {
   filtroFechaDesde.value = "";
   filtroFechaHasta.value = "";
-  filtroHoraInicio.value = "";
-  filtroHoraFin.value = "";
+  if (filtroHoraInicio) filtroHoraInicio.value = "";
+  if (filtroHoraFin) filtroHoraFin.value = "";
   if (filtroNumeroTurno) filtroNumeroTurno.value = "";
   if (coincidenciasSimilares) coincidenciasSimilares.innerHTML = "";
   state.filteredRows = [...state.allRows];

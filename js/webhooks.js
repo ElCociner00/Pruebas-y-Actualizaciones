@@ -81,6 +81,10 @@ export const WEBHOOK_CONSULTAR_GASTOS_VISUALIZACION =
 export const WEBHOOK_HISTORICO_CIERRE_INVENTARIOS_DATOS =
   "https://n8n.enkrato.com/webhook/cierre_inventarios_historico";
 
+// dashboard/index.html (señal inicial para cargar métricas)
+export const WEBHOOK_DASHBOARD_DATOS =
+  "https://n8n.enkrato.com/webhook/dashboard";
+
 // cierre_turno y cierre_inventarios (alerta de posible manipulacion tras generar constancia visual)
 export const WEBHOOK_ALERTA_MANIPULACION_CIERRE =
   "https://tu-n8n-instancia.com/webhook/alerta-manipulacion-cierre";

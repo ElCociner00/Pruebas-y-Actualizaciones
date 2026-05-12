@@ -100,6 +100,9 @@ function buildMenu({ context, environmentForMenu }) {
   }
 
   menu += `<a class="nav-link-btn" href="${APP_URLS.facturacion}">Facturacion</a>`;
+  if (context?.rol === "admin" || context?.rol === "admin_root") {
+    menu += `<a class="nav-link-btn" href="${APP_URLS.gestionPersonal}">Usuarios</a>`;
+  }
 
   const configLink = environmentForMenu === ENV_SIIGO
     ? APP_URLS.configuracionSiigo
@@ -148,6 +151,16 @@ function wireHeaderEvents(header, context) {
 
   document.addEventListener("click", () => {
     header.querySelectorAll(".nav-dropdown.open").forEach((dropdown) => dropdown.classList.remove("open"));
+  });
+
+  const configAnchor = header.querySelector(`a[href="${APP_URLS.configuracion}"]`);
+  configAnchor?.addEventListener("click", () => {
+    try {
+      const state = JSON.parse(localStorage.getItem("loggro_onboarding_steps") || "{\"step\":0}");
+      if (state.step >= 1) {
+        localStorage.setItem("loggro_onboarding_steps", JSON.stringify({ ...state, step: 2 }));
+      }
+    } catch (_error) {}
   });
 
   const logoutBtn = header.querySelector("#logoutBtnMenu");

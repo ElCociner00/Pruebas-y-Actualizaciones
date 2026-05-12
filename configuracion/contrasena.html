@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Seguridad de contraseña</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/contrasena.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+  <script type="module" src="../js/header.js"></script>
+  <div class="main">
+    <h1>Seguridad de contraseña</h1>
+    <section class="bloque">
+      <h2>Enviar correo de recuperación a un usuario</h2>
+      <p>Solo puedes enviar recuperación a usuarios de tu propia empresa.</p>
+      <form id="recoveryForm">
+        <select id="recoveryEmail"></select>
+        <button id="sendRecoveryEmail" type="submit">Enviar correo de recuperación</button>
+      </form>
+    </section>
+    <section class="bloque">
+      <h2>Cambiar tu contraseña</h2>
+      <form id="changePasswordForm">
+        <input id="currentPassword" type="password" placeholder="Contraseña actual">
+        <input id="newPassword" type="password" placeholder="Nueva contraseña">
+        <button id="updateMyPassword" type="submit">Actualizar contraseña</button>
+      </form>
+    </section>
+    <div id="passwordStatus"></div>
+  </div>
+  <script type="module" src="../js/contrasena.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>AXIOMA | Gestión Usuarios</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/gestion_usuarios.css">
+</head>
+<body style="display:none">
+  <script type="module" src="../js/router.js"></script>
+  <script type="module" src="../js/header.js"></script>
+  <div class="main">
+    <h1>Gestión Usuarios</h1>
+    <div id="gestionUsuariosEstado" class="status"></div>
+    <div id="gestionUsuariosPanel"></div>
+
+    <section class="bloque">
+      <h2>Crear usuario</h2>
+      <label for="tipoAltaUsuario">Tipo de usuario</label>
+      <select id="tipoAltaUsuario">
+        <option value="">Selecciona una opción</option>
+        <option value="empleado">Empleado</option>
+        <option value="otro">Admin o Revisor</option>
+      </select>
+
+      <form id="formEmpleado" hidden>
+        <h3>Registro de empleado</h3>
+        <label>Nombre completo</label><input id="empNombre" type="text" required>
+        <label>Cédula</label><input id="empCedula" type="text" required>
+        <label>Fecha ingreso</label><input id="empFechaIngreso" type="date" required>
+        <label>Correo</label><input id="empEmail" type="email" required>
+        <label>Contraseña</label><input id="empPassword" type="password" required>
+        <button type="submit">Registrar empleado</button>
+      </form>
+
+      <form id="formOtro" hidden>
+        <h3>Registro admin o revisor</h3>
+        <label>Nombre completo</label><input id="otroNombre" type="text" required>
+        <label>Cédula</label><input id="otroCedula" type="text" required>
+        <label>Correo</label><input id="otroEmail" type="email" required>
+        <label>Contraseña</label><input id="otroPassword" type="password" required>
+        <label>Rol</label>
+        <select id="otroRol" required><option value="admin">Admin</option><option value="revisor">Revisor</option></select>
+        <button type="submit">Registrar usuario</button>
+      </form>
+      <div id="altaStatus"></div>
+    </section>
+  </div>
+  <script type="module" src="../js/gestion_usuarios.js"></script>
+  <script type="module" src="../js/gestion_personal.js"></script>
+  <script type="module" src="../js/footer.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+.main{max-width:760px}
+.bloque{background:#fff;padding:20px;border-radius:12px;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;text-align:center}
+.bloque input,.bloque select{max-width:520px;margin:0 auto;width:100%}
+#passwordStatus{text-align:center;margin-top:10px}
+@media (max-width:768px){.main{max-width:100%}.bloque{padding:14px}}

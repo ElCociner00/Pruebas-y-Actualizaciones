@@ -1,0 +1,2 @@
+.onb-arrow{position:fixed;z-index:9999;font-size:64px;animation:onb-bounce 1s infinite;pointer-events:none}
+@keyframes onb-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(16px)}}
