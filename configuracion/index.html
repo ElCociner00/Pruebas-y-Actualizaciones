@@ -6,6 +6,7 @@
 
   <link rel="stylesheet" href="../css/main.css">
   <link rel="stylesheet" href="../css/configuracion.css">
+  <link rel="stylesheet" href="../css/onboarding_flechas.css">
 </head>
 
 <body style="display:none">
@@ -20,9 +21,7 @@
       <button class="accordion-toggle">Usuarios</button>
       <div class="accordion-content">
         <ul class="config-list">
-          <li><a href="gestion_usuarios.html">Gestión de usuarios</a></li>
-          <li><a href="registro_empleados.html">Registrar empleados</a></li>
-          <li><a href="registro_otros_usuarios.html">Registro revisores y admins</a></li>
+          <li><a href="../gestion_personal/">Módulo unificado de usuarios</a></li>
         </ul>
       </div>
 
@@ -30,6 +29,7 @@
       <div class="accordion-content">
         <ul class="config-list">
           <li><a href="permisos.html">Permisos</a></li>
+          <li><a href="contrasena.html">Cambiar o recuperar contraseña</a></li>
         </ul>
         <p class="coming-soon">Proximamente gestion de permisos y roles</p>
       </div>
@@ -73,6 +73,7 @@
   </script>
 
   <script type="module" src="../js/configuracion.js"></script>
+  <script type="module" src="../js/onboarding_loggro.js"></script>
   <script type="module" src="../js/footer.js"></script>
   <!-- Parche de autenticación para módulos (aislado) -->
   <script type="module" src="../js/module_fix/init.js"></script>

@@ -25,6 +25,7 @@ export const APP_URLS = {
   registroEmpleados: route("/configuracion/registro_empleados.html"),
   registroOtrosUsuarios: route("/configuracion/registro_otros_usuarios.html"),
   gestionUsuarios: route("/configuracion/gestion_usuarios.html"),
+  gestionPersonal: route("/gestion_personal/"),
   gestionEmpresas: route("/gestion_empresas/"),
   facturacion: route("/facturacion/"),
   revisionPagos: route("/facturacion/revision_pagos.html"),
@@ -40,7 +41,8 @@ export const APP_URLS = {
   legalDatos: route("/legal/datos.html"),
   legalResponsabilidad: route("/legal/responsabilidad.html"),
   legalSeguridad: route("/legal/seguridad.html"),
-  legalConsentimientos: route("/legal/consentimientos.html")
+  legalConsentimientos: route("/legal/consentimientos.html"),
+  configuracionContrasena: route("/configuracion/contrasena.html")
 };
 
 export const APP_ASSETS = {
