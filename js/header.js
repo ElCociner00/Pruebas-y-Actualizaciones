@@ -100,6 +100,9 @@ function buildMenu({ context, environmentForMenu }) {
   }
 
   menu += `<a class="nav-link-btn" href="${APP_URLS.facturacion}">Facturacion</a>`;
+  if (context?.rol === "admin" || context?.rol === "admin_root") {
+    menu += `<a class="nav-link-btn" href="${APP_URLS.gestionPersonal}">Usuarios</a>`;
+  }
 
   const configLink = environmentForMenu === ENV_SIIGO
     ? APP_URLS.configuracionSiigo
