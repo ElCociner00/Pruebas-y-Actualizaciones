@@ -1191,6 +1191,7 @@ const getMomentoDia = (timeValue) => {
         setStatus(message);
         if (message.toLowerCase().includes("no has configurado credenciales para loggroo")) {
           activarGuiaCredenciales();
+          localStorage.setItem("loggro_onboarding_steps", JSON.stringify({ step: 1, source: "cierre_turno" }));
         }
         return;
       }

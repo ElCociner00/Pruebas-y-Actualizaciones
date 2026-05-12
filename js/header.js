@@ -153,6 +153,16 @@ function wireHeaderEvents(header, context) {
     header.querySelectorAll(".nav-dropdown.open").forEach((dropdown) => dropdown.classList.remove("open"));
   });
 
+  const configAnchor = header.querySelector(`a[href="${APP_URLS.configuracion}"]`);
+  configAnchor?.addEventListener("click", () => {
+    try {
+      const state = JSON.parse(localStorage.getItem("loggro_onboarding_steps") || "{\"step\":0}");
+      if (state.step >= 1) {
+        localStorage.setItem("loggro_onboarding_steps", JSON.stringify({ ...state, step: 2 }));
+      }
+    } catch (_error) {}
+  });
+
   const logoutBtn = header.querySelector("#logoutBtnMenu");
   if (logoutBtn) {
     logoutBtn.onclick = async (event) => {

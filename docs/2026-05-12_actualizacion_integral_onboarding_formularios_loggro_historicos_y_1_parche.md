@@ -81,3 +81,35 @@ Completar los 2 pendientes críticos:
 - ✅ Alta de empleados y admins/revisores desde un mismo módulo (segmentado).
 - ✅ Recuperación por correo y cambio de contraseña en sesión activa disponibles en configuración.
 - ⚠️ Bloqueo global de ingreso para usuario inactivo depende de la política/consulta que retorne tu contexto auth en backend (revisar RPC/get_my_context en Supabase).
+
+---
+
+## Parche 2 — 2026-05-12 (correcciones UX finales: usuarios nativo, onboarding flechas y contraseña)
+
+### Objetivo
+Corregir los problemas detectados tras revisión funcional: módulo unificado de usuarios nativo, guía multinivel con flechas para credenciales Loggro y endurecimiento del módulo de contraseña.
+
+### Cambios realizados
+- Se rehizo `gestion_personal/index.html` para que sea nativo (sin iframes), con dos segmentos reales: gestión + creación condicional por tipo.
+- `js/gestion_personal.js` ahora envía altas de empleado y admin/revisor por webhook dentro del mismo módulo.
+- Se agregó guía visual multinivel con flechas (`css/onboarding_flechas.css`, `js/onboarding_loggro.js`) integrada en cierre turno y configuración.
+- `js/cierre_turno.js` ahora activa explícitamente el estado de onboarding en localStorage cuando detecta `ok:false` con mensaje de credenciales faltantes.
+- `js/header.js` marca avance de pasos al hacer click en configuración para continuar la guía.
+- `css/loggro.css` centra textos/campos en el módulo de credenciales.
+- `configuracion/contrasena.html` y `js/contrasena.js` se separaron por segmentos claros y seguros:
+  - recuperación solo por lista de usuarios activos de la misma empresa,
+  - cambio de contraseña con validación de contraseña actual + nueva,
+  - URL de recuperación fijada a `https://restaurantes.enkrato.com/configuracion/contrasena.html`.
+
+### Reversión rápida
+- Restaurar `gestion_personal/index.html` y `js/gestion_personal.js` a versión previa.
+- Quitar `css/onboarding_flechas.css` y `js/onboarding_loggro.js` de las vistas donde se importaron.
+- Retirar bloque de avance de onboarding en `js/header.js` y seteo en `js/cierre_turno.js`.
+- En contraseña, volver input libre de email y `updateUser` directo si se requiere modo básico.
+
+### Check (logs)
+- ✅ Gestión usuarios: interfaz nativa y unificada.
+- ✅ Alta usuarios: selector único despliega un formulario a la vez.
+- ✅ Header: acceso a Usuarios para admin/admin_root.
+- ✅ Onboarding flechas: se activa por trigger de credenciales faltantes y continúa en configuración.
+- ✅ Contraseña: recuperación solo a usuarios de la empresa + cambio con validación de contraseña actual.
