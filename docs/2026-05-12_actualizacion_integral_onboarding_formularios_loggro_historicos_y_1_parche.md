@@ -113,3 +113,30 @@ Corregir los problemas detectados tras revisión funcional: módulo unificado de
 - ✅ Header: acceso a Usuarios para admin/admin_root.
 - ✅ Onboarding flechas: se activa por trigger de credenciales faltantes y continúa en configuración.
 - ✅ Contraseña: recuperación solo a usuarios de la empresa + cambio con validación de contraseña actual.
+
+---
+
+## Parche 3 — 2026-05-12 (ajustes finales de UX reportados en revisión)
+
+### Objetivo
+Corregir fallos finales reportados: guía de flechas no visible, nombre del acceso en configuración, selector de formularios en gestión usuarios, centrado visual en loggro y endurecimiento/claridad del módulo de contraseña.
+
+### Cambios clave
+- `configuracion/index.html`: texto actualizado a **Gestión de usuarios**.
+- `gestion_personal/index.html` + `js/gestion_personal.js`: formularios ahora se alternan con atributo `hidden` garantizando que solo haya uno visible según selector.
+- `js/onboarding_loggro.js`: render con reintentos para esperar montaje del header y pintar flechas correctamente.
+- `css/loggro.css`: centrado explícito del input dentro de `.password-wrap`.
+- `configuracion/contrasena.html` + `css/contrasena.css`: layout con espaciado, formularios reales, títulos cortos y distribución centrada/responsive.
+- `js/contrasena.js`: recuperación por lista de usuarios de empresa (compatibilidad `email/correo`) y cambio de contraseña con verificación real de contraseña actual mediante reautenticación antes de `updateUser`.
+
+### Reversión rápida
+- Restaurar secciones previas de contraseña y ocultamiento por clase en gestión usuarios.
+- Eliminar `css/contrasena.css` si se requiere volver al estilo base.
+- Revertir `js/onboarding_loggro.js` a versión sin reintentos.
+
+### Check (logs)
+- ✅ Flechas onboarding visibles tras trigger de credenciales faltantes.
+- ✅ Gestión de usuarios muestra un solo formulario según selección.
+- ✅ Configuración muestra etiqueta “Gestión de usuarios”.
+- ✅ Contraseña: UI clara y con formularios válidos.
+- ✅ Cambio de contraseña valida clave actual (reauth) antes de actualizar.

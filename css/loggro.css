@@ -28,6 +28,7 @@
 }
 
 .campo input { text-align: center; }
+.password-wrap input { text-align: center; flex: 1; }
 
 .ayuda {
   margin: 6px 0 8px;

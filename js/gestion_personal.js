@@ -9,8 +9,8 @@ const setStatus = (m) => { altaStatus.textContent = m; };
 
 const renderAlta = () => {
   const value = tipoAltaUsuario?.value || "";
-  formEmpleado?.classList.toggle("is-hidden", value !== "empleado");
-  formOtro?.classList.toggle("is-hidden", value !== "otro");
+  if (formEmpleado) formEmpleado.hidden = value !== "empleado";
+  if (formOtro) formOtro.hidden = value !== "otro";
 };
 
 tipoAltaUsuario?.addEventListener("change", renderAlta);

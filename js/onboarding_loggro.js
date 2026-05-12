@@ -15,8 +15,17 @@ const drawArrowTo = (selector) => {
   document.body.appendChild(arrow);
 };
 
-const state = getState();
-if (state.step === 1 || state.step === 2) drawArrowTo(".user-menu-toggle");
-if (window.location.pathname.includes("/configuracion/")) {
-  if (state.step >= 2) drawArrowTo("a[href$='loggro.html']");
-}
+const paint = () => {
+  const state = getState();
+  if (state.step === 1 || state.step === 2) drawArrowTo(".user-menu-toggle");
+  if (window.location.pathname.includes("/configuracion/") && state.step >= 2) {
+    drawArrowTo("a[href$='loggro.html']");
+  }
+};
+
+let attempts = 0;
+const timer = setInterval(() => {
+  attempts += 1;
+  paint();
+  if (document.querySelector(".onb-arrow") || attempts > 20) clearInterval(timer);
+}, 300);
