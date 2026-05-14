@@ -25,7 +25,7 @@ const getActivoDesdeEstado = (value) => {
 
 const cargarData = async (empresaId) => {
   const [usuariosSistemaRes, otrosUsuariosRes, empleadosRes] = await Promise.all([
-    supabase.from("usuarios_sistema").select("id,nombre_completo,rol,activo").eq("empresa_id", empresaId),
+    supabase.from("usuarios_sistema").select("id,nombre_completo,rol,activo,email").eq("empresa_id", empresaId),
     supabase.from("otros_usuarios").select("id,nombre_completo,cedula,estado").eq("empresa_id", empresaId),
     supabase.from("empleados").select("id,nombre_completo,cedula,estado").eq("empresa_id", empresaId)
   ]);
@@ -34,7 +34,10 @@ const cargarData = async (empresaId) => {
   const byEmpleadoId = new Map(empleados.map((item) => [normalize(item.id), item]));
   const byEmpleadoNombre = new Map(empleados.map((item) => [normalizeKey(item.nombre_completo), item]));
 
-  const usuariosSistema = (Array.isArray(usuariosSistemaRes.data) ? usuariosSistemaRes.data : [])
+  const usuariosSistemaRaw = (Array.isArray(usuariosSistemaRes.data) ? usuariosSistemaRes.data : []);
+  const bySistemaId = new Map(usuariosSistemaRaw.map((item) => [normalize(item.id), item]));
+
+  const usuariosSistema = usuariosSistemaRaw
     .filter((item) => normalizeKey(item.rol) !== "admin_root")
     .map((item) => {
       const empleadoMatch = byEmpleadoId.get(normalize(item.id))
@@ -47,6 +50,7 @@ const cargarData = async (empresaId) => {
         cedula: normalize(empleadoMatch?.cedula) || "-",
         rol: normalize(item.rol) || "operativo",
         activo: item.activo !== false,
+        email: normalize(item.email),
         empleado_id: normalize(empleadoMatch?.id)
       };
     });
@@ -63,6 +67,7 @@ const cargarData = async (empresaId) => {
         cedula: normalize(item.cedula) || normalize(empleadoMatch?.cedula) || "-",
         rol: "revisor",
         activo: getActivoDesdeEstado(item.estado),
+        email: normalize(bySistemaId.get(normalize(item.id))?.email),
         empleado_id: normalize(empleadoMatch?.id)
       };
     });
@@ -90,6 +95,7 @@ const render = (rows) => {
             <th>Rol</th>
             <th>Tipo</th>
             <th>Activo</th>
+            <th>Reset contraseña</th>
           </tr>
         </thead>
         <tbody>
@@ -113,6 +119,7 @@ const render = (rows) => {
                   <span class="switch-slider"></span>
                 </label>
               </td>
+              <td><button type="button" data-action="reset" data-email="${escapeHtml(row.email)}">Enviar correo</button></td>
             </tr>
           `).join("")}
         </tbody>
@@ -155,6 +162,22 @@ const init = async () => {
   render(rows);
   setEstado(`Usuarios gestionables: ${rows.length}`);
 
+
+  panel?.addEventListener("click", async (event) => {
+    const btn = event.target.closest('button[data-action="reset"]');
+    if (!btn) return;
+    const email = btn.dataset.email || "";
+    if (!email) return setEstado("El usuario no tiene correo registrado.");
+    btn.disabled = true;
+    try {
+      if (typeof window.sendRecoveryForEmail !== "function") throw new Error("Módulo de contraseña no disponible");
+      await window.sendRecoveryForEmail(email);
+      setEstado(`Correo de recuperación enviado a ${email}.`);
+    } catch (error) {
+      setEstado(`No se pudo enviar recuperación: ${error.message || "sin detalle"}`);
+    } finally { btn.disabled = false; }
+  });
+
   panel?.addEventListener("change", async (event) => {
     const input = event.target.closest('input[data-action="toggle"]');
     if (!input) return;
@@ -178,3 +201,6 @@ const init = async () => {
 };
 
 init();
+
+
+import("./contrasena.js").catch(() => {});

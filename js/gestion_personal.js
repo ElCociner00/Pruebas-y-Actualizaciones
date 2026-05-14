@@ -9,8 +9,8 @@ const setStatus = (m) => { altaStatus.textContent = m; };
 
 const renderAlta = () => {
   const value = tipoAltaUsuario?.value || "";
-  if (formEmpleado) formEmpleado.hidden = value !== "empleado";
-  if (formOtro) formOtro.hidden = value !== "otro";
+  if (formEmpleado) { formEmpleado.hidden = value !== "empleado"; formEmpleado.style.display = value === "empleado" ? "block" : "none"; }
+  if (formOtro) { formOtro.hidden = value !== "otro"; formOtro.style.display = value === "otro" ? "block" : "none"; }
 };
 
 tipoAltaUsuario?.addEventListener("change", renderAlta);
