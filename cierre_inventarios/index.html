@@ -30,6 +30,14 @@
           </select>
         </label>
         <label>
+          Momento inventario
+          <select id="momento_inventario">
+            <option value="">Selecciona momento</option>
+            <option value="apertura">Apertura</option>
+            <option value="cierre">Cierre</option>
+          </select>
+        </label>
+        <label>
           Hora inicio
           <input id="hora_inicio" type="time">
         </label>
@@ -68,7 +76,7 @@
               <th>Stock</th>
               <th>Unidad de medida</th>
               <th>Stock actual</th>
-              <th>Restante</th>
+              <th>Diferencia</th>
             </tr>
           </thead>
           <tbody id="inventarioBody"></tbody>
@@ -77,36 +85,15 @@
     </section>
 
     <section class="bloque">
-      <h2>Detalles adicionales</h2>
-      <div class="detalles-adicionales-toggle">
-        <span>¿Registrar inconsistencias?</span>
-        <label>
-          <input type="radio" name="detallesAdicionales" id="detallesAdicionalesNo" value="no" checked>
-          No
-        </label>
-        <label>
-          <input type="radio" name="detallesAdicionales" id="detallesAdicionalesSi" value="si">
-          Sí
-        </label>
-      </div>
-
-      <div id="detallesAdicionalesConfig" class="detalles-adicionales-config is-hidden">
-        <label for="cantidadInconsistencias">
-          ¿Cuántos productos tienen una inconsistencia?
-        </label>
-        <select id="cantidadInconsistencias">
-          <option value="0">0</option>
-        </select>
-      </div>
-      <p id="inconsistenciasHint" class="inconsistencias-hint is-hidden">Completa todas las filas sin repetir producto.</p>
-
+      <h2>Registro de inconsistencias</h2>
+      <p id="inconsistenciasHint" class="inconsistencias-hint is-hidden">Se detectaron diferencias. Asigna responsable en cada fila para poder subir.</p>
       <div id="inconsistenciasWrap" class="tabla-wrap is-hidden">
         <table>
           <thead>
             <tr>
               <th>Producto</th>
               <th>Responsable</th>
-              <th>Unidades faltantes</th>
+              <th>Diferencia</th>
             </tr>
           </thead>
           <tbody id="inconsistenciasBody"></tbody>
