@@ -18,10 +18,7 @@ const inventarioBody = document.getElementById("inventarioBody");
 const inconsistenciasBody = document.getElementById("inconsistenciasBody");
 const status = document.getElementById("status");
 const loadingOverlay = document.getElementById("loadingOverlay");
-const detallesAdicionalesNo = document.getElementById("detallesAdicionalesNo");
-const detallesAdicionalesSi = document.getElementById("detallesAdicionalesSi");
-const detallesAdicionalesConfig = document.getElementById("detallesAdicionalesConfig");
-const cantidadInconsistencias = document.getElementById("cantidadInconsistencias");
+const momentoInventario = document.getElementById("momento_inventario");
 const inconsistenciasWrap = document.getElementById("inconsistenciasWrap");
 const inconsistenciasHint = document.getElementById("inconsistenciasHint");
 
@@ -41,6 +38,7 @@ let resumenDescargado = false;
 let bloqueoConstanciaActivo = false;
 let responsablesCache = [];
 let inconsistenciasDraft = [];
+let inconsistenciasAuto = [];
 
 const setStatus = (message) => {
   status.textContent = message;
@@ -328,24 +326,8 @@ const setButtonState = ({ consultar, verificar, subir }) => {
   if (typeof subir === "boolean") btnSubir.disabled = !subir;
 };
 
-const isDetallesAdicionalesEnabled = () => Boolean(detallesAdicionalesSi?.checked);
+const isDetallesAdicionalesEnabled = () => inconsistenciasAuto.length > 0;
 
-const getMaxInconsistencias = () => Math.max(0, productRows.size);
-
-const syncCantidadInconsistenciasOptions = () => {
-  if (!cantidadInconsistencias) return;
-  const max = getMaxInconsistencias();
-  const currentValue = Number(cantidadInconsistencias.value || 0);
-
-  cantidadInconsistencias.innerHTML = "";
-  for (let i = 0; i <= max; i += 1) {
-    const option = document.createElement("option");
-    option.value = String(i);
-    option.textContent = String(i);
-    cantidadInconsistencias.appendChild(option);
-  }
-  cantidadInconsistencias.value = String(Math.min(currentValue, max));
-};
 
 const buildResponsableOptions = (selectedValue = "") => {
   const fragment = document.createDocumentFragment();
@@ -405,7 +387,7 @@ const renderInconsistenciasRows = () => {
   saveInconsistenciasDraft();
 
   const isEnabled = isDetallesAdicionalesEnabled();
-  const count = isEnabled ? Number(cantidadInconsistencias?.value || 0) : 0;
+  const count = isEnabled ? inconsistenciasAuto.length : 0;
   inconsistenciasBody.innerHTML = "";
   inconsistenciasHint?.classList.toggle("is-hidden", !isEnabled || count <= 0);
 
@@ -422,7 +404,8 @@ const renderInconsistenciasRows = () => {
     const productoCell = document.createElement("td");
     const productoSelect = document.createElement("select");
     productoSelect.className = "inconsistencia-producto";
-    productoSelect.appendChild(buildProductoOptions(inconsistenciasDraft[i]?.producto_id || ""));
+    productoSelect.appendChild(buildProductoOptions(inconsistenciasAuto[i]?.producto_id || ""));
+    productoSelect.disabled = true;
     productoCell.appendChild(productoSelect);
     tr.appendChild(productoCell);
 
@@ -438,15 +421,12 @@ const renderInconsistenciasRows = () => {
     faltantesInput.type = "text";
     faltantesInput.className = "inconsistencia-faltantes";
     faltantesInput.placeholder = "0";
-    faltantesInput.value = String(inconsistenciasDraft[i]?.unidades_faltantes || "");
-    enforceNumericInput([faltantesInput]);
+    faltantesInput.value = String(inconsistenciasAuto[i]?.unidades_faltantes || "");
+    faltantesInput.readOnly = true;
     faltantesCell.appendChild(faltantesInput);
     tr.appendChild(faltantesCell);
 
-    [productoSelect, responsableSelect, faltantesInput].forEach((element) => {
-      element.addEventListener("change", resetVerification);
-      element.addEventListener("input", resetVerification);
-    });
+    [responsableSelect].forEach((element) => { element.addEventListener("change", resetVerification); });
 
     fragment.appendChild(tr);
   }
@@ -456,12 +436,8 @@ const renderInconsistenciasRows = () => {
 };
 
 const toggleDetallesAdicionales = (enabled) => {
-  detallesAdicionalesConfig?.classList.toggle("is-hidden", !enabled);
-  inconsistenciasHint?.classList.toggle("is-hidden", !enabled);
-  if (!enabled && cantidadInconsistencias) {
-    cantidadInconsistencias.value = "0";
-    inconsistenciasDraft = [];
-  }
+    inconsistenciasHint?.classList.toggle("is-hidden", !enabled);
+  if (!enabled) { inconsistenciasDraft = []; inconsistenciasAuto=[]; }
   renderInconsistenciasRows();
   resetVerification();
 };
@@ -535,9 +511,7 @@ const aplicarBloqueoConstancia = (activo) => {
     responsable,
     horaInicio,
     horaFin,
-    detallesAdicionalesNo,
-    detallesAdicionalesSi,
-    cantidadInconsistencias
+    momentoInventario
   ].filter(Boolean);
 
   controlesBloqueables.forEach((control) => {
@@ -566,6 +540,7 @@ const readRowsForWebhook = ({ includeHiddenAsZero = true } = {}) => {
       producto_nombre: rowData.nombre,
       stock: Number(rowData.stockInput.value || 0),
       stock_gastado: Number.isNaN(stockGastado) ? 0 : stockGastado,
+      diferencia: Number(rowData.restanteInput.value || 0),
       restante: Number(rowData.restanteInput.value || 0),
       visible: rowData.visible,
       oculto: !rowData.visible,
@@ -587,6 +562,7 @@ const buildBasePayload = async () => {
     hora_inicio: horaInicio.value,
     hora_fin: horaFin.value,
     responsable_id: responsable.value,
+    momento_inventario: momentoInventario?.value || "",
     responsable_turno_id: responsable.value,
     responsable_login_id: contextPayload.usuario_id || "",
     registrado_por: contextPayload.usuario_id || ""
@@ -691,7 +667,11 @@ const renderProductRows = (productos) => {
     restanteCell.appendChild(restanteInput);
     tr.appendChild(restanteCell);
 
-    enforceNumericInput([gastadoInput]);
+    gastadoInput.addEventListener("input", () => {
+      gastadoInput.value = gastadoInput.value.replace(/[^0-9,]/g, "");
+      const parts = gastadoInput.value.split(",");
+      if (parts.length > 2) gastadoInput.value = `${parts[0]},${parts.slice(1).join("")}`;
+    });
     gastadoInput.addEventListener("input", resetVerification);
 
     productRows.set(productId, {
@@ -728,8 +708,7 @@ const renderProducts = async () => {
 
     setStatus("Construyendo tabla de productos...");
     renderProductRows(productosVisibles);
-    syncCantidadInconsistenciasOptions();
-    renderInconsistenciasRows();
+        renderInconsistenciasRows();
 
     setStatus(productRows.size ? "Productos cargados." : "No hay productos para mostrar.");
   } catch (error) {
@@ -745,8 +724,8 @@ const renderProducts = async () => {
 
 
 const validateRequiredFields = () => {
-  if (!fecha.value || !responsable.value || !horaInicio.value || !horaFin.value) {
-    setStatus("Atención: Completa fecha, responsable y turno.");
+  if (!fecha.value || !responsable.value || !momentoInventario?.value || !horaInicio.value || !horaFin.value) {
+    setStatus("Atención: Completa fecha, responsable, momento inventario y turno.");
     return false;
   }
   if (!productRows.size) {
@@ -755,13 +734,8 @@ const validateRequiredFields = () => {
   }
   if (isDetallesAdicionalesEnabled()) {
     const inconsistencias = collectInconsistencias();
-    const configuredCount = Number(cantidadInconsistencias?.value || 0);
-    if (configuredCount <= 0) {
-      setStatus("Atención: si activas detalles adicionales debes registrar al menos 1 inconsistencia.");
-      return false;
-    }
-    if (configuredCount !== inconsistencias.length) {
-      setStatus("Atención: Actualiza la cantidad de inconsistencias y completa la tabla.");
+    if (!inconsistencias.length) {
+      setStatus("Atención: la verificación detectó diferencias pero no se cargaron inconsistencias.");
       return false;
     }
 
@@ -800,7 +774,7 @@ btnConsultar.addEventListener("click", async () => {
       body: JSON.stringify({
         ...payload,
         detalles_adicionales: isDetallesAdicionalesEnabled(),
-        cantidad_inconsistencias: Number(cantidadInconsistencias?.value || 0),
+        cantidad_inconsistencias: collectInconsistencias().length,
         inconsistencias: collectInconsistencias(),
         items: readRowsForWebhook()
       })
@@ -852,7 +826,7 @@ btnVerificar.addEventListener("click", () => {
       return;
     }
 
-    const restante = stockValue - gastadoValue;
+    const restante = gastadoValue - stockValue;
     rowData.restanteInput.value = String(restante);
   });
 
@@ -862,6 +836,19 @@ btnVerificar.addEventListener("click", () => {
     setStatus("Atención: Hay valores inválidos en stock o stock gastado.");
     return;
   }
+
+  
+  inconsistenciasAuto = [];
+  productRows.forEach((rowData, productId) => {
+    const diff = Number(rowData.restanteInput.value || 0);
+    if (diff !== 0) {
+      inconsistenciasAuto.push({
+        producto_id: productId,
+        unidades_faltantes: diff
+      });
+    }
+  });
+  toggleDetallesAdicionales(inconsistenciasAuto.length > 0);
 
   verified = true;
   setButtonState({ subir: false });
@@ -903,7 +890,7 @@ btnSubir.addEventListener("click", async () => {
       body: JSON.stringify({
         ...payload,
         detalles_adicionales: isDetallesAdicionalesEnabled(),
-        cantidad_inconsistencias: Number(cantidadInconsistencias?.value || 0),
+        cantidad_inconsistencias: collectInconsistencias().length,
         inconsistencias: collectInconsistencias(),
         items: readRowsForWebhook()
       })
@@ -1020,7 +1007,7 @@ const descargarImagenInventario = ({ bloquearDespues = false } = {}) => {
     });
   };
 
-  drawRow(y, ["Producto", "Sistema", "Unidad", "Stock actual", "Restante"], true);
+  drawRow(y, ["Producto", "Sistema", "Unidad", "Stock actual", "Diferencia"], true);
   y += rowH;
 
   const rows = Array.from(productRows.values());
@@ -1148,8 +1135,8 @@ btnLimpiar.addEventListener("click", () => {
   });
   resetVerification();
   setButtonState({ verificar: false });
-  if (detallesAdicionalesNo) detallesAdicionalesNo.checked = true;
   toggleDetallesAdicionales(false);
+momentoInventario?.addEventListener("change", resetVerification);
   setStatus("Datos limpiados.");
 });
 
@@ -1157,18 +1144,6 @@ btnLimpiar.addEventListener("click", () => {
   element.addEventListener("change", resetVerification);
 });
 
-detallesAdicionalesNo?.addEventListener("change", () => {
-  if (detallesAdicionalesNo.checked) toggleDetallesAdicionales(false);
-});
-
-detallesAdicionalesSi?.addEventListener("change", () => {
-  if (detallesAdicionalesSi.checked) toggleDetallesAdicionales(true);
-});
-
-cantidadInconsistencias?.addEventListener("change", () => {
-  renderInconsistenciasRows();
-  resetVerification();
-});
 
 setButtonState({ consultar: true, verificar: false, subir: false });
 cargarPoliticaEmpresa();
@@ -1176,3 +1151,4 @@ loadResponsables();
 renderProducts();
 cargarNombreEmpresa();
 toggleDetallesAdicionales(false);
+momentoInventario?.addEventListener("change", resetVerification);

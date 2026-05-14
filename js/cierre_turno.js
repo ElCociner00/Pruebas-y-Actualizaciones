@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let resumenDescargado = false;
   let bloqueoConstanciaActivo = false;
   let verificado = false;
+  let apoyosConfirmados = false;
   let empresaPolicy = {
     plan: "free",
     activa: true,
@@ -792,6 +793,7 @@ const getMomentoDia = (timeValue) => {
     if (horaLlegadaHora) horaLlegadaHora.value = "";
     if (horaLlegadaMinuto) horaLlegadaMinuto.value = "";
     if (horaLlegadaMomento) horaLlegadaMomento.value = "AM";
+    apoyosConfirmados = false;
     marcarComoNoVerificado();
     applyVisibilitySettings();
   };
@@ -814,6 +816,7 @@ const getMomentoDia = (timeValue) => {
 
   fecha.addEventListener("change", () => {
     actualizarEstadoHoraFin();
+    apoyosConfirmados = false;
     marcarComoNoVerificado();
   });
   responsable.addEventListener("change", marcarComoNoVerificado);
@@ -826,16 +829,19 @@ const getMomentoDia = (timeValue) => {
   bolsa?.addEventListener("input", () => {
     syncEfectivoRealFromCajaBolsa();
     syncDiferenciaEfectivo();
+    apoyosConfirmados = false;
     marcarComoNoVerificado();
   });
   caja?.addEventListener("input", () => {
     syncEfectivoRealFromCajaBolsa();
     syncDiferenciaEfectivo();
+    apoyosConfirmados = false;
     marcarComoNoVerificado();
   });
   efectivoApertura?.addEventListener("input", () => {
     syncEfectivoSistemaDisplay();
     syncDiferenciaEfectivo();
+    apoyosConfirmados = false;
     marcarComoNoVerificado();
   });
 
@@ -849,7 +855,8 @@ const getMomentoDia = (timeValue) => {
   Object.values(inputsFinanzas).forEach((grupo) => {
     grupo.real.addEventListener("input", () => {
       renderTotalizados();
-      marcarComoNoVerificado();
+      apoyosConfirmados = false;
+    marcarComoNoVerificado();
     });
   });
   Object.values(inputsDiferencias).forEach(({ input }) => {
@@ -1046,6 +1053,10 @@ const getMomentoDia = (timeValue) => {
 
     resumenDescargado = true;
     aplicarBloqueoConstancia(Boolean(bloquearDespues));
+    if (hasApoyosCapturados() && !apoyosConfirmados) {
+      setStatus("Debes usar el botón Confirmar apoyo antes de verificar/subir cuando hay apoyos.");
+      return false;
+    }
     return true;
   };
   btnSolicitarCorreccion?.addEventListener("click", () => {
