@@ -214,6 +214,35 @@
       </div>
     </section>
 
+    
+
+    <section class="bloque apoyos-inline-block">
+      <h3>Apoyos</h3>
+      <div class="apoyos-head-grid">
+        <label class="apoyos-question">
+          ¿Hubo apoyos?
+          <select id="apoyo_hubo">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+          </select>
+        </label>
+        <label id="apoyoCantidadWrap" class="apoyos-cantidad is-hidden">
+          Cantidad de personas
+          <select id="apoyo_cantidad"><option value="">Selecciona</option></select>
+        </label>
+        <div class="apoyos-consulta-box">
+          <button id="consultarPropinaApoyos" type="button">Confirmar apoyo</button>
+          <small id="apoyosConsultaNota">Obligatorio cuando hay apoyos.</small>
+        </div>
+      </div>
+      <div id="apoyoTablaWrap" class="apoyo-tabla-wrap is-hidden">
+        <div class="apoyo-tabla-head">
+          <span>Responsable apoyo</span><span>Propina</span><span>Rango</span>
+        </div>
+        <div id="apoyoRows" class="apoyo-rows"></div>
+      </div>
+    </section>
+
     <section class="bloque">
       <h2>Totalizados del cierre</h2>
       <div class="totales-grid">
