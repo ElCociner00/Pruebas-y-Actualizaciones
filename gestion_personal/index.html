@@ -23,22 +23,22 @@
         <option value="otro">Admin o Revisor</option>
       </select>
 
-      <form id="formEmpleado" hidden>
+      <form id="formEmpleado" hidden style="display:none">
         <h3>Registro de empleado</h3>
         <label>Nombre completo</label><input id="empNombre" type="text" required>
         <label>Cédula</label><input id="empCedula" type="text" required>
         <label>Fecha ingreso</label><input id="empFechaIngreso" type="date" required>
         <label>Correo</label><input id="empEmail" type="email" required>
-        <label>Contraseña</label><input id="empPassword" type="password" required>
+        <label>Contraseña</label><input id="empPassword" type="password" autocomplete="new-password" required>
         <button type="submit">Registrar empleado</button>
       </form>
 
-      <form id="formOtro" hidden>
+      <form id="formOtro" hidden style="display:none">
         <h3>Registro admin o revisor</h3>
         <label>Nombre completo</label><input id="otroNombre" type="text" required>
         <label>Cédula</label><input id="otroCedula" type="text" required>
         <label>Correo</label><input id="otroEmail" type="email" required>
-        <label>Contraseña</label><input id="otroPassword" type="password" required>
+        <label>Contraseña</label><input id="otroPassword" type="password" autocomplete="new-password" required>
         <label>Rol</label>
         <select id="otroRol" required><option value="admin">Admin</option><option value="revisor">Revisor</option></select>
         <button type="submit">Registrar usuario</button>
@@ -49,8 +49,8 @@
     <section class="bloque">
       <h2>Gestión de contraseña</h2>
       <form id="changePasswordForm">
-        <input id="currentPassword" type="password" placeholder="Contraseña actual">
-        <input id="newPassword" type="password" placeholder="Nueva contraseña">
+        <input id="currentPassword" type="password" autocomplete="current-password" placeholder="Contraseña actual">
+        <input id="newPassword" type="password" autocomplete="new-password" placeholder="Nueva contraseña">
         <button id="updateMyPassword" type="submit">Actualizar contraseña</button>
       </form>
       <div id="passwordStatus"></div>

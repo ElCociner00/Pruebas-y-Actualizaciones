@@ -25,7 +25,7 @@ const getActivoDesdeEstado = (value) => {
 
 const cargarData = async (empresaId) => {
   const [usuariosSistemaRes, otrosUsuariosRes, empleadosRes] = await Promise.all([
-    supabase.from("usuarios_sistema").select("id,nombre_completo,rol,activo,email,correo").eq("empresa_id", empresaId),
+    supabase.from("usuarios_sistema").select("id,nombre_completo,rol,activo,email").eq("empresa_id", empresaId),
     supabase.from("otros_usuarios").select("id,nombre_completo,cedula,estado").eq("empresa_id", empresaId),
     supabase.from("empleados").select("id,nombre_completo,cedula,estado").eq("empresa_id", empresaId)
   ]);
@@ -34,7 +34,10 @@ const cargarData = async (empresaId) => {
   const byEmpleadoId = new Map(empleados.map((item) => [normalize(item.id), item]));
   const byEmpleadoNombre = new Map(empleados.map((item) => [normalizeKey(item.nombre_completo), item]));
 
-  const usuariosSistema = (Array.isArray(usuariosSistemaRes.data) ? usuariosSistemaRes.data : [])
+  const usuariosSistemaRaw = (Array.isArray(usuariosSistemaRes.data) ? usuariosSistemaRes.data : []);
+  const bySistemaId = new Map(usuariosSistemaRaw.map((item) => [normalize(item.id), item]));
+
+  const usuariosSistema = usuariosSistemaRaw
     .filter((item) => normalizeKey(item.rol) !== "admin_root")
     .map((item) => {
       const empleadoMatch = byEmpleadoId.get(normalize(item.id))
@@ -47,7 +50,7 @@ const cargarData = async (empresaId) => {
         cedula: normalize(empleadoMatch?.cedula) || "-",
         rol: normalize(item.rol) || "operativo",
         activo: item.activo !== false,
-        email: normalize(item.email || item.correo),
+        email: normalize(item.email),
         empleado_id: normalize(empleadoMatch?.id)
       };
     });
@@ -64,6 +67,7 @@ const cargarData = async (empresaId) => {
         cedula: normalize(item.cedula) || normalize(empleadoMatch?.cedula) || "-",
         rol: "revisor",
         activo: getActivoDesdeEstado(item.estado),
+        email: normalize(bySistemaId.get(normalize(item.id))?.email),
         empleado_id: normalize(empleadoMatch?.id)
       };
     });
